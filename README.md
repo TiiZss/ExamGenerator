@@ -27,10 +27,10 @@ Los archivos se nombrarán examen_SOC_1.txt, examen_SOC_2.txt, etc., y sus respu
 
 ### **Argumentos:**
 
-* <ruta_del_archivo_de_preguntas.txt>: La ruta al archivo de texto que contiene todas tus preguntas.  
-* <nombre_base_examen>: Un prefijo para los nombres de los archivos de examen y respuestas (ej., "SOC", "Matematicas", "Final").  
-* <numero_total_de_examenes>: La cantidad de exámenes que deseas generar.  
-* <numero_de_preguntas_por_examen>: El número de preguntas que cada examen debe contener. Si es mayor que el total de preguntas disponibles, se usarán todas las preguntas disponibles.
+* **<ruta_del_archivo_de_preguntas.txt>**: La ruta al archivo de texto que contiene todas tus preguntas.  
+* **<nombre_base_examen>**: Un prefijo para los nombres de los archivos de examen y respuestas (ej., "SOC", "Matematicas", "Final").  
+* **<numero_total_de_examenes>**: La cantidad de exámenes que deseas generar.  
+* **<numero_de_preguntas_por_examen>**: El número de preguntas que cada examen debe contener. Si es mayor que el total de preguntas disponibles, se usarán todas las preguntas disponibles.
 
 ## **📝 Formato del Archivo de Preguntas**
 
@@ -41,7 +41,6 @@ A) París
 B) Londres  
 C) Madrid  
 D) Roma  
-
 ANSWER: C)
 
 2. ¿Cuál es el río más largo del mundo?  
@@ -49,7 +48,6 @@ A) Nilo
 B) Amazonas  
 C) Yangtsé  
 D) Misisipi  
-
 ANSWER: B)
 
 (Y así sucesivamente...)
@@ -65,7 +63,5 @@ ANSWER: B)
 
 El script generará dos tipos de archivos por cada examen:
 
-* examen\_\<nombre\_base\_examen\>\_\<numero\>.txt: Contiene las preguntas con sus opciones barajadas.  
-* respuestas\_examen\_\<nombre\_base\_examen\>\_\<numero\>.txt: Contiene las respuestas correctas para cada pregunta del examen correspondiente.
-
-Este README te ayudará a ti y a otros usuarios a entender rápidamente cómo usar tu generador de exámenes.
+* **examen_<nombre_base_examen>_<numero_de_examen>.txt**: Contiene las preguntas con sus opciones barajadas.  
+* **respuestas_examen_<nombre_base_examen>_<numero_de_examen>.txt**: Contiene las respuestas correctas para cada pregunta del examen correspondiente.
