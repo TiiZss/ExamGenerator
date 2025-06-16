@@ -25,12 +25,13 @@ eg.py preguntas.txt SOC 30 20
 Este comando generará 30 exámenes, cada uno con 20 preguntas seleccionadas aleatoriamente del archivo preguntas.txt. 
 Los archivos se nombrarán examen_SOC_1.txt, examen_SOC_2.txt, etc., y sus respuestas correspondientes respuestas_examen_SOC_1.txt, etc.
 
-### **Argumentos:**
-
-* **<ruta_del_archivo_de_preguntas.txt>**: La ruta al archivo de texto que contiene todas tus preguntas.  
-* **<nombre_base_examen>**: Un prefijo para los nombres de los archivos de examen y respuestas (ej., "SOC", "Matematicas", "Final").  
-* **<numero_total_de_examenes>**: La cantidad de exámenes que deseas generar.  
-* **<numero_de_preguntas_por_examen>**: El número de preguntas que cada examen debe contener. Si es mayor que el total de preguntas disponibles, se usarán todas las preguntas disponibles.
+### **Parámetros:**
+| Parámetro | Descripción |
+| ------ | ------ |
+| **<ruta_del_archivo_de_preguntas.txt>**| La ruta al archivo de texto que contiene todas tus preguntas.  
+| **<nombre_base_examen>**| Un prefijo para los nombres de los archivos de examen y respuestas (ej., "SOC", "Matematicas", "Final").  
+| **<numero_total_de_examenes>**| La cantidad de exámenes que deseas generar.  
+| **<numero_de_preguntas_por_examen>**| El número de preguntas que cada examen debe contener. Si es mayor que el total de preguntas disponibles, se usarán todas las preguntas disponibles.
 
 ## **📝 Formato del Archivo de Preguntas**
 
