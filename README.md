@@ -15,38 +15,41 @@ Este script de Python te permite generar exámenes aleatorios y sus respectivas 
 ## **🚀 Uso**
 
 Para ejecutar el script, necesitas tener Python instalado. Luego, utiliza la siguiente sintaxis en tu terminal:
-
-python generador\_examenes.py \<ruta\_del\_archivo\_de\_preguntas.txt\> \<nombre\_base\_examen\> \<numero\_total\_de\_examenes\> \<numero\_de\_preguntas\_por\_examen\>
-
+```
+eg.py <ruta_del_archivo_de_preguntas.txt> <nombre_base_examen> <numero_total_de_examenes> <numero_de_preguntas_por_examen>
+```
 **Ejemplo:**
-
-python generador\_examenes.py preguntas.txt SOC 30 20
-
-Este comando generará 30 exámenes, cada uno con 20 preguntas seleccionadas aleatoriamente del archivo preguntas.txt. Los archivos se nombrarán examen\_SOC\_1.txt, examen\_SOC\_2.txt, etc., y sus respuestas correspondientes respuestas\_examen\_SOC\_1.txt, etc.
+```
+eg.py preguntas.txt SOC 30 20
+```
+Este comando generará 30 exámenes, cada uno con 20 preguntas seleccionadas aleatoriamente del archivo preguntas.txt. 
+Los archivos se nombrarán examen_SOC_1.txt, examen_SOC_2.txt, etc., y sus respuestas correspondientes respuestas_examen_SOC_1.txt, etc.
 
 ### **Argumentos:**
 
-* \<ruta\_del\_archivo\_de\_preguntas.txt\>: La ruta al archivo de texto que contiene todas tus preguntas.  
-* \<nombre\_base\_examen\>: Un prefijo para los nombres de los archivos de examen y respuestas (ej., "SOC", "Matematicas", "Final").  
-* \<numero\_total\_de\_examenes\>: La cantidad de exámenes que deseas generar.  
-* \<numero\_de\_preguntas\_por\_examen\>: El número de preguntas que cada examen debe contener. Si es mayor que el total de preguntas disponibles, se usarán todas las preguntas disponibles.
+* <ruta_del_archivo_de_preguntas.txt>: La ruta al archivo de texto que contiene todas tus preguntas.  
+* <nombre_base_examen>: Un prefijo para los nombres de los archivos de examen y respuestas (ej., "SOC", "Matematicas", "Final").  
+* <numero_total_de_examenes>: La cantidad de exámenes que deseas generar.  
+* <numero_de_preguntas_por_examen>: El número de preguntas que cada examen debe contener. Si es mayor que el total de preguntas disponibles, se usarán todas las preguntas disponibles.
 
 ## **📝 Formato del Archivo de Preguntas**
 
 El archivo de preguntas (.txt) debe seguir un formato específico para que el script pueda interpretarlo correctamente. Cada bloque de pregunta/respuesta debe estar separado por una línea en blanco.
 
-1\. ¿Cuál es la capital de España?  
+1. ¿Cuál es la capital de España?  
 A) París  
 B) Londres  
 C) Madrid  
 D) Roma  
+
 ANSWER: C)
 
-2\. ¿Cuál es el río más largo del mundo?  
+2. ¿Cuál es el río más largo del mundo?  
 A) Nilo  
 B) Amazonas  
 C) Yangtsé  
 D) Misisipi  
+
 ANSWER: B)
 
 (Y así sucesivamente...)
