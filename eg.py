@@ -111,8 +111,8 @@ def generate_exam(exam_number, exam_name_prefix, all_questions, num_questions_pe
 # --- Main execution ---
 if __name__ == "__main__":
     if len(sys.argv) < 5: # Now we expect 4 arguments
-        print("Uso: python generador_examenes.py <ruta_del_archivo_de_preguntas.txt> <nombre_base_examen> <numero_total_de_examenes> <numero_de_preguntas_por_examen>")
-        print("Ejemplo: python generador_examenes.py preguntas.txt SOC 30 20")
+        print("Uso: python eg.py <ruta_del_archivo_de_preguntas.txt> <nombre_base_examen> <numero_total_de_examenes> <numero_de_preguntas_por_examen>")
+        print("Ejemplo: python eg.py preguntas.txt SOC 30 20")
         sys.exit(1) # Exit with an error code
 
     questions_file_path = sys.argv[1] # 1st argument
