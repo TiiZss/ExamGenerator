@@ -6,159 +6,162 @@
 #| |____ >  < (_| | | | | | | |__| |  __/ | | |  __/ | | (_| | || (_) | |   
 #|______/_/\_\__,_|_| |_| |_|\_____|\___|_| |_|\___|_|  \__,_|\__\___/|_|   
 #                                                                           
-# by TiiZss v.5.20250613
+# by TiiZss v.6.20250624
 
 import random
 import re
 import sys
 import os
+from typing import List, Dict, Tuple
 
-def load_questions_from_file(filepath):
+def load_questions_from_file(filepath: str) -> List[Dict[str, any]]:
+    """Load questions from a text file and return parsed question data."""
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"El archivo '{filepath}' no se encontró.")
+
     questions_data = []
     current_question = {}
     options = []
     
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"El archivo '{filepath}' no se encontró.")
+    # Compile regex patterns once for better performance
+    option_pattern = re.compile(r'^[A-D][).]\s')
+    question_number_pattern = re.compile(r'^\d+\.\s*')
 
     with open(filepath, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-
-    for line_num, line_raw in enumerate(lines):
-        line = line_raw.strip()
-        
-        if not line: # Empty line signifies end of a question block
-            if current_question and options:
-                current_question['options'] = options
-                questions_data.append(current_question)
-                current_question = {} # Reset for next question
-                options = [] # Reset options
-            continue
-
-        # Check if it's an option or an answer line
-        is_option = re.match(r'^[A-D][).]\s', line)
-        is_answer = line.startswith('ANSWER:')
-
-        if is_option: # It's an option
-            if 'question' not in current_question:
-                raise ValueError(f"Opción detectada sin una pregunta previa en línea {line_num + 1}. Revisa tu archivo de preguntas.")
-            options.append(line[3:].strip()) 
-        elif is_answer: # It's the answer
-            if 'question' not in current_question:
-                raise ValueError(f"Respuesta detectada sin una pregunta previa en línea {line_num + 1}. Revisa tu archivo de preguntas.")
-            try:
-                current_question['answer'] = line.split(':')[1].strip()[0] 
-            except IndexError:
-                raise ValueError(f"Formato de ANSWER incorrecto en línea {line_num + 1}: '{line_raw.strip()}'. Debe ser 'ANSWER: X)'")
-        else: # If it's not an option, not an answer, and not blank, it must be a question
-            if current_question and options: # Save previous question if exists
-                current_question['options'] = options
-                questions_data.append(current_question)
+        for line_num, line_raw in enumerate(f, 1):
+            line = line_raw.strip()
             
-            # Initialize a new question
-            if re.match(r'^\d+\.\s*', line):
-                question_text = re.sub(r'^\d+\.\s*', '', line)
-            else:
-                question_text = line
-            
-            current_question = {'question': question_text}
-            options = [] # Ensure options are empty for the new question
+            if not line:  # Empty line - end of question block
+                if current_question and options:
+                    current_question['options'] = options
+                    questions_data.append(current_question)
+                    current_question, options = {}, []
+                continue
 
+            # Check line type
+            if option_pattern.match(line):  # Option line
+                if 'question' not in current_question:
+                    raise ValueError(f"Opción detectada sin una pregunta previa en línea {line_num}.")
+                options.append(line[3:].strip())
+                
+            elif line.startswith('ANSWER:'):  # Answer line
+                if 'question' not in current_question:
+                    raise ValueError(f"Respuesta detectada sin una pregunta previa en línea {line_num}.")
+                try:
+                    current_question['answer'] = line.split(':', 1)[1].strip()[0]
+                except (IndexError, KeyError):
+                    raise ValueError(f"Formato de ANSWER incorrecto en línea {line_num}: '{line_raw.strip()}'")
+                    
+            else:  # Question line
+                # Save previous question if exists
+                if current_question and options:
+                    current_question['options'] = options
+                    questions_data.append(current_question)
+                
+                # Clean question text
+                question_text = question_number_pattern.sub('', line)
+                current_question = {'question': question_text}
+                options = []
+
+    # Don't forget the last question
     if current_question and options:
         current_question['options'] = options
         questions_data.append(current_question)
 
     if not questions_data:
-        raise ValueError("No se cargó ninguna pregunta. El archivo podría estar vacío o con formato completamente incorrecto.")
+        raise ValueError("No se cargó ninguna pregunta. Verifica el formato del archivo.")
 
     return questions_data
 
-def generate_exam(exam_number, exam_name_prefix, all_questions, num_questions_per_exam):
-    # Modificación aquí: Usa exam_name_prefix
+def generate_exam(exam_number: int, exam_name_prefix: str, all_questions: List[Dict], 
+                 num_questions_per_exam: int) -> Tuple[str, str]:
+    """Generate a single exam and its answer key."""
     exam_content = f"--- EXAMEN {exam_name_prefix} {exam_number} ---\n\n"
     answers_content = f"--- RESPUESTAS EXAMEN {exam_name_prefix} {exam_number} ---\n\n"
 
-    # Select a random subset of questions for this exam
-    if num_questions_per_exam > len(all_questions):
-        print(f"Advertencia: El número de preguntas por examen ({num_questions_per_exam}) es mayor que el total de preguntas disponibles ({len(all_questions)}). Se usarán todas las preguntas disponibles.")
-        selected_questions = random.sample(all_questions, len(all_questions))
-    else:
-        selected_questions = random.sample(all_questions, num_questions_per_exam)
+    # Select and shuffle questions
+    num_to_select = min(num_questions_per_exam, len(all_questions))
+    selected_questions = random.sample(all_questions, num_to_select)
+    
+    option_letters = ['A', 'B', 'C', 'D']
 
-    random.shuffle(selected_questions) # Shuffle in place
-
-    for i, q_data in enumerate(selected_questions):
+    for i, q_data in enumerate(selected_questions, 1):
         question_text = q_data["question"]
-        original_options = list(q_data["options"])
-        
-        correct_answer_text = original_options[ord(q_data["answer"]) - ord('A')]
+        original_options = q_data["options"]
+        correct_answer_index = ord(q_data["answer"]) - ord('A')
+        correct_answer_text = original_options[correct_answer_index]
 
+        # Shuffle options and find new correct letter
         shuffled_options = random.sample(original_options, len(original_options))
+        new_correct_letter = option_letters[shuffled_options.index(correct_answer_text)]
 
-        exam_content += f"{i + 1}. {question_text}\n"
-        
-        option_letters = ['A', 'B', 'C', 'D']
-        new_correct_letter = ''
+        # Build exam content
+        exam_content += f"{i}. {question_text}\n"
         for j, option in enumerate(shuffled_options):
             exam_content += f"   {option_letters[j]}) {option}\n"
-            if option == correct_answer_text:
-                new_correct_letter = option_letters[j]
         exam_content += "\n"
-        answers_content += f"{i + 1}. {new_correct_letter})\n"
+        
+        answers_content += f"{i}. {new_correct_letter})\n"
     
     return exam_content, answers_content
 
-# --- Main execution ---
-if __name__ == "__main__":
-    if len(sys.argv) < 5: # Now we expect 4 arguments
-        print("Uso: python eg.py <ruta_del_archivo_de_preguntas.txt> <nombre_base_examen> <numero_total_de_examenes> <numero_de_preguntas_por_examen>")
-        print("Ejemplo: python eg.py preguntas.txt SOC 30 20")
-        sys.exit(1) # Exit with an error code
-
-    questions_file_path = sys.argv[1] # 1st argument
-    exam_name_prefix = sys.argv[2] # 2nd argument
+def validate_args(args: List[str]) -> Tuple[str, str, int, int]:
+    """Validate and parse command line arguments."""
+    if len(args) < 5:
+        raise ValueError("Uso: python eg.py <archivo_preguntas.txt> <nombre_base> <num_examenes> <preguntas_por_examen>")
+    
+    questions_file = args[1]
+    exam_prefix = args[2]
     
     try:
-        num_exams = int(sys.argv[3]) # 3rd argument
+        num_exams = int(args[3])
         if num_exams <= 0:
-            print("Error: El número total de exámenes debe ser un entero positivo.")
-            sys.exit(1)
-    except ValueError:
-        print("Error: El número total de exámenes debe ser un valor numérico entero.")
-        sys.exit(1)
-
+            raise ValueError("El número de exámenes debe ser positivo.")
+    except ValueError as e:
+        raise ValueError(f"Número de exámenes inválido: {e}")
+    
     try:
-        num_questions_per_exam = int(sys.argv[4]) # 4th argument
-        if num_questions_per_exam <= 0:
-            print("Error: El número de preguntas por examen debe ser un entero positivo.")
-            sys.exit(1)
-    except ValueError:
-        print("Error: El número de preguntas por examen debe ser un valor numérico entero.")
-        sys.exit(1)
+        questions_per_exam = int(args[4])
+        if questions_per_exam <= 0:
+            raise ValueError("El número de preguntas por examen debe ser positivo.")
+    except ValueError as e:
+        raise ValueError(f"Número de preguntas por examen inválido: {e}")
+    
+    return questions_file, exam_prefix, num_exams, questions_per_exam
 
+def main():
+    """Main execution function."""
     try:
-        questions_data = load_questions_from_file(questions_file_path)
-        if not questions_data:
-            print(f"Error: No se pudieron cargar preguntas del archivo '{questions_file_path}'. Asegúrate de que el formato sea correcto.")
-        else:
-            print(f"Se cargaron {len(questions_data)} preguntas del archivo '{questions_file_path}'.")
+        questions_file, exam_prefix, num_exams, questions_per_exam = validate_args(sys.argv)
+        
+        # Load questions
+        questions_data = load_questions_from_file(questions_file)
+        print(f"Cargadas {len(questions_data)} preguntas del archivo '{questions_file}'.")
+        
+        # Adjust questions per exam if necessary
+        if questions_per_exam > len(questions_data):
+            print(f"Advertencia: Solo hay {len(questions_data)} preguntas disponibles.")
+            questions_per_exam = len(questions_data)
+
+        # Generate exams
+        for i in range(1, num_exams + 1):
+            exam_content, answers_content = generate_exam(i, exam_prefix, questions_data, questions_per_exam)
             
-            if num_questions_per_exam > len(questions_data):
-                print(f"Advertencia: Se solicitó {num_questions_per_exam} preguntas por examen, pero solo hay {len(questions_data)} disponibles. Se usarán todas las preguntas disponibles en cada examen.")
-                num_questions_per_exam = len(questions_data)
+            # Write files
+            with open(f"examen_{exam_prefix}_{i}.txt", "w", encoding="utf-8") as f:
+                f.write(exam_content)
+            
+            with open(f"respuestas_examen_{exam_prefix}_{i}.txt", "w", encoding="utf-8") as f:
+                f.write(answers_content)
 
-            for i in range(1, num_exams + 1):
-                exam, answers = generate_exam(i, exam_name_prefix, questions_data, num_questions_per_exam)
-                
-                with open(f"examen_{exam_name_prefix}_{i}.txt", "w", encoding="utf-8") as f:
-                    f.write(exam)
-                
-                with open(f"respuestas_examen_{exam_name_prefix}_{i}.txt", "w", encoding="utf-8") as f:
-                    f.write(answers)
+        print(f"Generados {num_exams} exámenes ({exam_prefix}) con {questions_per_exam} preguntas cada uno.")
 
-            print(f"Se han generado {num_exams} exámenes ({exam_name_prefix}), cada uno con {num_questions_per_exam} preguntas, y sus respectivas respuestas.")
-
-    except FileNotFoundError as e:
+    except (FileNotFoundError, ValueError) as e:
         print(f"Error: {e}")
+        sys.exit(1)
     except Exception as e:
-        print(f"Ocurrió un error: {e}")
+        print(f"Error inesperado: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
