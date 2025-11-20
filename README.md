@@ -1,4 +1,10 @@
 # ExamGenerator: Script en python para generar exámenes aleatorios
+![GitHub License](https://img.shields.io/github/license/TiiZss/ExamGenerator)
+![GitHub Repo stars](https://img.shields.io/github/stars/TiiZss/ExamGenerator)
+![GitHub Downloads (all assets, latest release)](https://img.shields.io/github/downloads/TiiZss/ExamGenerator/latest/total)
+![GitHub top language](https://img.shields.io/github/languages/top/TiiZss/ExamGenerator)
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?business=AC5N3XX2KGY2S&no_recurring=0&item_name=Seguir+con+el+desarrollo+de+la+herramienta&currency_code=EUR)
 
 Este script de Python te permite generar exámenes aleatorios y sus respectivas hojas de respuestas a partir de un archivo de texto con preguntas predefinidas. Es ideal para crear múltiples versiones de un mismo examen con preguntas y opciones barajadas.
 
