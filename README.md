@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-9.20251125-orange.svg)](https://github.com/TiiZss/ExamGenerator)
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?business=AC5N3XX2KGY2S&no_recurring=0&item_name=Seguir+con+el+desarrollo+de+la+herramienta&currency_code=EUR)
+
 Un sistema completo y profesional en Python para generar exámenes aleatorios con múltiples formatos de salida, plantillas personalizables y generación de preguntas asistida por IA.
 
 ## 🌟 **Características Principales**
@@ -353,3 +355,4 @@ Este proyecto está licenciado bajo la Licencia GPL v3.0 - ver el archivo [LICEN
 ---
 
 ⭐ **Si este proyecto te ha sido útil, no olvides darle una estrella en GitHub!**
+
