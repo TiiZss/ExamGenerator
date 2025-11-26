@@ -1,68 +1,355 @@
-# ExamGenerator: Script en python para generar exámenes aleatorios
+# 🎓 ExamGenerator: Generador Avanzado de Exámenes Aleatorios
 
-Este script de Python te permite generar exámenes aleatorios y sus respectivas hojas de respuestas a partir de un archivo de texto con preguntas predefinidas. Es ideal para crear múltiples versiones de un mismo examen con preguntas y opciones barajadas.
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org)
+[![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-9.20251125-orange.svg)](https://github.com/TiiZss/ExamGenerator)
 
-## **✨ Características**
+Un sistema completo y profesional en Python para generar exámenes aleatorios con múltiples formatos de salida, plantillas personalizables y generación de preguntas asistida por IA.
 
-* **Carga de Preguntas Flexible:** Lee preguntas, opciones y respuestas de un archivo de texto con un formato sencillo.  
-* **Generación de Múltiples Exámenes:** Crea el número de exámenes que necesites.  
-* **Selección Aleatoria de Preguntas:** Si el número de preguntas solicitadas es menor que el total disponible, selecciona un subconjunto aleatorio.  
-* **Opciones Barajadas:** Las opciones de respuesta para cada pregunta se barajan en cada examen generado.  
-* **Generación de Respuestas:** Produce un archivo de respuestas separado para cada examen.  
-* **Personalización del Nombre:** Permite añadir un prefijo al nombre de los archivos de examen y respuestas.  
-* **Manejo Básico de Errores:** Incluye validaciones para el formato del archivo de preguntas y los argumentos de la línea de comandos.
+## 🌟 **Características Principales**
 
-## **🚀 Uso**
+### 📋 **Generador Principal (eg.py)**
+- **🎲 Aleatorización Inteligente**: Mezclado de preguntas y opciones con semillas consistentes
+- **📄 Múltiples Formatos**: Exportación en TXT, DOCX, o ambos simultáneamente
+- **🎨 Sistema de Plantillas**: Soporte completo para plantillas DOCX con 15+ placeholders
+- **📁 Organización Automática**: Creación de carpetas organizadas por tema de examen
+- **📊 Respuestas Múltiples**: Exportación en Excel, CSV, HTML, y TXT
+- **⏱️ Cálculo de Tiempo**: Estimación automática de duración del examen
+- **🔧 Configuración Flexible**: Múltiples opciones de personalización
 
-Para ejecutar el script, necesitas tener Python instalado. Luego, utiliza la siguiente sintaxis en tu terminal:
+### 🤖 **Generador con IA (qg.py)**
+- **🧠 Google Gemini Integration**: Generación automática de preguntas usando IA
+- **📑 Múltiples Formatos**: Procesamiento de PDF, DOCX, y PPTX
+- **🔍 Extracción Inteligente**: Análisis contextual de contenido
+- **🔐 Seguridad**: Gestión segura de API keys
+
+## 🚀 **Instalación y Configuración**
+
+### **Requisitos del Sistema**
+- Python 3.8 o superior
+- PowerShell (Windows) o Terminal (Linux/macOS)
+
+### **1. Instalación Automática**
+
+#### **🪟 Windows**
+```powershell
+# Método 1: Script directo
+powershell -ExecutionPolicy Bypass -File install.ps1
+
+# Método 2: Si hay problemas de permisos
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+.\install.ps1
 ```
-eg.py <ruta_del_archivo_de_preguntas.txt> <nombre_base_examen> <numero_total_de_examenes> <numero_de_preguntas_por_examen>
+
+#### **🐧 Linux / macOS**
+```bash
+# Método 1: Script completo (recomendado)
+chmod +x install.sh
+./install.sh
+
+# Método 2: Script rápido
+chmod +x quick_install.sh
+./quick_install.sh
+
+# Método 3: Con Make
+make setup-linux
+
+# Método 4: Script universal
+chmod +x setup.sh
+./setup.sh
 ```
-**Ejemplo:**
+
+### **2. Instalación Manual**
+
+```bash
+# Clonar repositorio
+git clone https://github.com/TiiZss/ExamGenerator.git
+cd ExamGenerator
+
+# Crear entorno virtual
+python -m venv .venv
+
+# Activar entorno virtual
+# Windows:
+.\.venv\Scripts\Activate.ps1
+# Linux/macOS:
+source .venv/bin/activate
+
+# Instalar dependencias
+pip install --upgrade pip
+pip install -r requirements.txt
 ```
-eg.py preguntas.txt SOC 30 20
+
+### **3. Configuración para IA (Opcional)**
+
+```bash
+# Windows PowerShell
+$env:GOOGLE_API_KEY = "tu-api-key-aqui"
+
+# Linux/macOS
+export GOOGLE_API_KEY="tu-api-key-aqui"
+
+# Permanente en Windows
+setx GOOGLE_API_KEY "tu-api-key-aqui"
+
+# Permanente en Linux/macOS (añadir a ~/.bashrc o ~/.zshrc)
+echo 'export GOOGLE_API_KEY="tu-api-key-aqui"' >> ~/.bashrc
 ```
-Este comando generará 30 exámenes, cada uno con 20 preguntas seleccionadas aleatoriamente del archivo preguntas.txt. 
-Los archivos se nombrarán examen_SOC_1.txt, examen_SOC_2.txt, etc., y sus respuestas correspondientes respuestas_examen_SOC_1.txt, etc.
 
-### **Parámetros:**
-| Parámetro | Descripción |
-| ------ | ------ |
-| **<ruta_del_archivo_de_preguntas.txt>**| La ruta al archivo de texto que contiene todas tus preguntas.  
-| **<nombre_base_examen>**| Un prefijo para los nombres de los archivos de examen y respuestas (ej., "SOC", "Matematicas", "Final").  
-| **<numero_total_de_examenes>**| La cantidad de exámenes que deseas generar.  
-| **<numero_de_preguntas_por_examen>**| El número de preguntas que cada examen debe contener. Si es mayor que el total de preguntas disponibles, se usarán todas las preguntas disponibles.
+## 📖 **Uso Detallado**
 
-## **📝 Formato del Archivo de Preguntas**
+### **Generador Principal (eg.py)**
 
-El archivo de preguntas (.txt) debe seguir un formato específico para que el script pueda interpretarlo correctamente. Cada bloque de pregunta/respuesta debe estar separado por una línea en blanco.
+#### **Sintaxis Básica**
+```bash
+python eg.py <archivo_preguntas> <nombre_base> <num_examenes> <preguntas_por_examen> [formato] [plantilla] [formato_respuestas]
+```
 
-1. ¿Cuál es la capital de España?  
-A) París  
-B) Londres  
-C) Madrid  
-D) Roma  
-ANSWER: C)
+#### **Parámetros Disponibles**
 
-2. ¿Cuál es el río más largo del mundo?  
-A) Nilo  
-B) Amazonas  
-C) Yangtsé  
-D) Misisipi  
-ANSWER: B)
+| Parámetro | Descripción | Valores | Requerido |
+|-----------|-------------|---------|-----------|
+| `archivo_preguntas` | Archivo con las preguntas base | .txt | ✅ |
+| `nombre_base` | Prefijo para archivos generados | Texto | ✅ |
+| `num_examenes` | Cantidad de exámenes a generar | Número entero | ✅ |
+| `preguntas_por_examen` | Preguntas por cada examen | Número entero | ✅ |
+| `formato` | Formato de salida | `txt`, `docx`, `both` | ❌ (default: txt) |
+| `plantilla` | Archivo de plantilla DOCX | .docx | ❌ |
+| `formato_respuestas` | Formato de respuestas | `xlsx`, `csv`, `html`, `txt` | ❌ (default: xlsx) |
 
-(Y así sucesivamente...)
+#### **Ejemplos de Uso**
 
-**Notas importantes sobre el formato:**
+```bash
+# Básico - TXT simple
+python eg.py preguntas.txt SOC 30 20
 
-* Cada **pregunta** puede comenzar con un número y un punto (ej., 1.) o simplemente ser el texto de la pregunta.  
-* Las **opciones** deben comenzar con una letra mayúscula seguida de un paréntesis o un punto y un espacio (ej., A), A.).  
-* La **respuesta** debe estar en una línea separada, comenzando con ANSWER: seguido de la letra de la opción correcta y un paréntesis (ej., ANSWER: C)).  
-* **Las líneas en blanco son cruciales** para separar bloques de preguntas.
+# DOCX con plantilla
+python eg.py preguntas.txt "Final_Matematicas" 25 15 docx plantilla_examen.docx
 
-## **📁 Archivos de Salida**
+# Múltiples formatos con respuestas en HTML
+python eg.py preguntas.txt "Parcial_Historia" 40 12 both plantilla.docx html
 
-El script generará dos tipos de archivos por cada examen:
+# Solo DOCX con respuestas en CSV
+python eg.py preguntas.txt "Evaluacion_Ciencias" 15 25 docx "" csv
+```
 
-* **examen_<nombre_base_examen>_<numero_de_examen>.txt**: Contiene las preguntas con sus opciones barajadas.  
-* **respuestas_examen_<nombre_base_examen>_<numero_de_examen>.txt**: Contiene las respuestas correctas para cada pregunta del examen correspondiente.
+#### **Placeholders para Plantillas**
+
+Las plantillas DOCX pueden usar estos marcadores que serán reemplazados automáticamente:
+
+| Placeholder | Descripción | Ejemplo |
+|-------------|-------------|---------|
+| `{{EXAM_NAME}}` | Nombre del examen | SOC |
+| `{{EXAM_NUMBER}}` | Número del examen | 1, 2, 3... |
+| `{{EXAM_TITLE}}` | Título completo | EXAMEN SOC 1 |
+| `{{DATE}}` | Fecha actual | 25/11/2025 |
+| `{{FULL_DATE}}` | Fecha completa | 25 de Noviembre de 2025 |
+| `{{DAY}}` | Día | 25 |
+| `{{MONTH}}` | Mes en español | Noviembre |
+| `{{YEAR}}` | Año | 2025 |
+| `{{NUM_QUESTIONS}}` | Número de preguntas | 20 |
+| `{{EXAM_TIME}}` | Tiempo estimado | 20 minutos |
+| `{{CONTENT}}` | Punto de inserción | (marca donde van las preguntas) |
+
+### **Generador con IA (qg.py)**
+
+#### **Sintaxis**
+```bash
+python qg.py <archivo_documento> [--num_preguntas N] [--idioma IDIOMA]
+```
+
+#### **Ejemplos**
+```bash
+# Generar 10 preguntas de un PDF
+python qg.py documento.pdf
+
+# Generar 20 preguntas en inglés de un DOCX
+python qg.py presentacion.docx --num_preguntas 20 --idioma ingles
+
+# Procesar PowerPoint con 15 preguntas
+python qg.py slides.pptx --num_preguntas 15
+```
+
+## 📝 **Formato del Archivo de Preguntas**
+
+El archivo de preguntas debe seguir este formato estructurado:
+
+```
+1. ¿Cuál es la capital de España?
+A) París
+B) Londres
+C) Madrid
+D) Roma
+ANSWER: C
+
+2. ¿Cuál es el resultado de 2 + 2?
+A) 3
+B) 4
+C) 5
+D) 6
+ANSWER: B
+
+```
+
+### **Reglas Importantes**
+- ✅ Cada pregunta en línea separada
+- ✅ Opciones con formato `A)`, `B)`, `C)`, `D)`
+- ✅ Respuesta con formato `ANSWER: X`
+- ✅ **Línea en blanco** entre cada pregunta
+- ✅ Codificación UTF-8
+
+## 📁 **Estructura de Archivos Generados**
+
+```
+ExamGenerator/
+├── Examenes_NombreExamen/           # Carpeta auto-generada
+│   ├── examen_NombreExamen_1.txt    # Exámenes individuales
+│   ├── examen_NombreExamen_1.docx
+│   ├── respuestas_NombreExamen_completas.xlsx  # Todas las respuestas
+│   ├── respuestas_NombreExamen_completas.html
+│   └── ...
+├── eg.py
+├── qg.py
+├── preguntas.txt
+└── requirements.txt
+```
+
+## 🎨 **Características Avanzadas**
+
+### **1. Respuestas en Excel Profesional**
+- 📊 Formato tabular transpuesto (exámenes en filas, preguntas en columnas)
+- 🎨 Estilos profesionales con colores corporativos
+- 📋 Información completa del examen (fecha, tiempo, estadísticas)
+- 📐 Ajuste automático de columnas
+
+### **2. Respuestas HTML Responsivas**
+- 💻 Diseño responsive para cualquier dispositivo
+- 🎨 Interfaz moderna con CSS avanzado
+- 📱 Optimizado para impresión y visualización
+- 🔍 Tabla interactiva con hover effects
+
+### **3. Sistema de Plantillas Avanzado**
+- 📄 Soporte completo para plantillas institucionales
+- 🔄 Reemplazo automático de 15+ variables
+- 📅 Fechas en español con formato personalizable
+- ⏰ Cálculo automático de tiempo de examen
+
+### **4. Organización Inteligente**
+- 📁 Creación automática de carpetas organizadas
+- 🏷️ Nomenclatura consistente y profesional
+- 📋 Un archivo maestro de respuestas por set de exámenes
+- 🔄 Preservación de estructura para múltiples ejecuciones
+
+## 🛠️ **Solución de Problemas**
+
+### **Errores Comunes**
+
+#### **Error de Importación - python-docx**
+```bash
+# Problema: ModuleNotFoundError: No module named 'docx'
+pip install python-docx
+```
+
+#### **Error de Importación - openpyxl**
+```bash
+# Problema: No se puede crear Excel
+pip install openpyxl
+```
+
+#### **Error de API Key - Google AI**
+```bash
+# Problema: Variable de entorno no configurada
+# Windows:
+$env:GOOGLE_API_KEY = "tu-api-key-de-google-ai"
+# Linux/macOS:
+export GOOGLE_API_KEY="tu-api-key-de-google-ai"
+```
+
+#### **Error de Política de Ejecución (Windows)**
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+#### **Error de Permisos (Linux)**
+```bash
+chmod +x install.sh quick_install.sh setup.sh
+```
+
+### **Validaciones del Sistema**
+
+El sistema incluye validaciones automáticas para:
+- ✅ Formato correcto del archivo de preguntas
+- ✅ Existencia de archivos de plantilla
+- ✅ Parámetros de línea de comandos válidos
+- ✅ Disponibilidad de dependencias opcionales
+- ✅ Permisos de escritura en directorio de salida
+
+## 🔧 **Scripts de Instalación Disponibles**
+
+| Script | Plataforma | Descripción |
+|--------|------------|-------------|
+| `install.ps1` | Windows | Script completo para PowerShell |
+| `install.sh` | Linux/macOS | Script completo con detección de distribución |
+| `quick_install.sh` | Linux/macOS | Instalación rápida básica |
+| `setup.sh` | Universal | Script que detecta el sistema operativo |
+| `Makefile` | Linux/macOS | Para usuarios que prefieren make |
+
+## 📊 **Casos de Uso**
+
+### **🎓 Educación Formal**
+- Generación masiva de exámenes para universidades
+- Múltiples versiones para prevenir copias
+- Formatos profesionales para impresión
+
+### **🏢 Corporativo**
+- Evaluaciones de capacitación empresarial
+- Certificaciones internas
+- Tests de competencias técnicas
+
+### **📚 Autoevaluación**
+- Generación personalizada para estudio
+- Práctica con preguntas aleatorias
+- Seguimiento de progreso
+
+### **🔬 Investigación**
+- Instrumentos de medición académica
+- Estudios longitudinales
+- Herramientas de evaluación estandarizada
+
+## 🤝 **Contribuciones**
+
+¡Las contribuciones son bienvenidas! Por favor:
+
+1. 🍴 Fork el repositorio
+2. 🌿 Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. 💾 Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. 📤 Push a la rama (`git push origin feature/AmazingFeature`)
+5. 🔄 Abre un Pull Request
+
+## 📄 **Licencia**
+
+Este proyecto está licenciado bajo la Licencia GPL v3.0 - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## 👨‍💻 **Autor**
+
+**TiiZss** - [GitHub Profile](https://github.com/TiiZss)
+
+## 🙏 **Agradecimientos**
+
+- Google AI por la API de Gemini
+- Comunidad de Python por las excelentes librerías
+- Contribuidores y usuarios del proyecto
+
+## 📈 **Estadísticas del Proyecto**
+
+- 🎯 **Versión Actual**: 9.20251125
+- 🐍 **Python**: 3.8+
+- 📦 **Dependencias**: 6 principales
+- 🌟 **Características**: 15+ funcionalidades avanzadas
+- 📄 **Formatos Soportados**: 7 tipos diferentes
+- 🔧 **Placeholders**: 15+ variables automáticas
+- 🛠️ **Scripts de Instalación**: 5 diferentes opciones
+
+---
+
+⭐ **Si este proyecto te ha sido útil, no olvides darle una estrella en GitHub!**

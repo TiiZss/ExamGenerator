@@ -1,0 +1,81 @@
+# ExamGenerator - Makefile para instalación y gestión
+# by TiiZss
+
+.PHONY: install install-dev test clean help setup-linux setup-windows
+
+# Variables
+PYTHON := python3
+PIP := pip
+VENV := .venv
+VENV_BIN := $(VENV)/bin
+
+# Instalación principal
+install: setup-venv install-deps
+    @echo "✅ Instalación completada"
+    @echo "Para activar: source $(VENV_BIN)/activate"
+
+# Configuración para Linux
+setup-linux:
+    @echo "🐧 Configurando para Linux..."
+    @chmod +x install.sh quick_install.sh
+    @./install.sh
+
+# Configuración para Windows (WSL)
+setup-windows:
+    @echo "🪟 Para Windows usa: powershell -ExecutionPolicy Bypass -File install.ps1"
+
+# Crear entorno virtual
+setup-venv:
+    @echo "📦 Creando entorno virtual..."
+    @$(PYTHON) -m venv $(VENV)
+
+# Instalar dependencias
+install-deps: setup-venv
+    @echo "📚 Instalando dependencias..."
+    @$(VENV_BIN)/$(PIP) install --upgrade pip
+    @$(VENV_BIN)/$(PIP) install -r requirements.txt
+
+# Instalación para desarrollo (con dependencias adicionales)
+install-dev: setup-venv
+    @echo "🔧 Instalación para desarrollo..."
+    @$(VENV_BIN)/$(PIP) install --upgrade pip
+    @$(VENV_BIN)/$(PIP) install -r requirements.txt
+    @$(VENV_BIN)/$(PIP) install pytest black flake8 mypy
+
+# Ejecutar tests básicos
+test:
+    @echo "🧪 Ejecutando tests..."
+    @$(VENV_BIN)/$(PYTHON) -c "import docx, openpyxl; print('✅ Módulos principales OK')"
+    @if [ -f eg.py ]; then echo "✅ eg.py encontrado"; else echo "❌ eg.py no encontrado"; fi
+    @if [ -f qg.py ]; then echo "✅ qg.py encontrado"; else echo "❌ qg.py no encontrado"; fi
+
+# Ejecutar ejemplo básico
+example:
+    @echo "🎯 Ejecutando ejemplo..."
+    @$(VENV_BIN)/$(PYTHON) eg.py preguntas.txt Ejemplo 2 5
+
+# Limpiar archivos generados
+clean:
+    @echo "🧹 Limpiando..."
+    @rm -rf $(VENV)
+    @rm -rf Examenes_*
+    @rm -rf __pycache__
+    @rm -rf *.pyc
+    @echo "✅ Limpieza completada"
+
+# Mostrar ayuda
+help:
+    @echo "ExamGenerator - Comandos disponibles:"
+    @echo ""
+    @echo "  make install      - Instalación completa"
+    @echo "  make setup-linux  - Instalación con script para Linux"
+    @echo "  make install-dev  - Instalación para desarrollo"
+    @echo "  make test         - Verificar instalación"
+    @echo "  make example      - Ejecutar ejemplo básico"
+    @echo "  make clean        - Limpiar archivos generados"
+    @echo "  make help         - Mostrar esta ayuda"
+    @echo ""
+    @echo "Para Windows: make setup-windows"
+
+# Regla por defecto
+all: install
