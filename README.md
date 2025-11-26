@@ -711,5 +711,3 @@ Este proyecto está licenciado bajo la Licencia GPL v3.0 - ver el archivo [LICEN
 ---
 
 ⭐ **Si este proyecto te ha sido útil, no olvides darle una estrella en GitHub!**
-
->>>>>>> da6a17fb926a5a85bd4d383ef80408fcec706452
