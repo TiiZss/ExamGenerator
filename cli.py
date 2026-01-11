@@ -314,7 +314,7 @@ def validate(questions_file):
             table.add_row(
                 str(i),
                 str(len(q.get('options', []))),
-                q.get('answer', 'N/A')
+                str(q.get('answer', 'N/A'))
             )
         
         if len(questions) > 10:

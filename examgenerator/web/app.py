@@ -421,9 +421,9 @@ def test_api_key():
         
         # Probar la API key listando modelos
         import google.generativeai as genai
-        genai.configure(api_key=api_key)
+        genai.configure(api_key=api_key)  # type: ignore
         
-        models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]  # type: ignore
         
         return jsonify({
             'success': True,

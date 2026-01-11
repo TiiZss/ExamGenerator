@@ -23,9 +23,9 @@ def load_questions_from_file(filepath: str) -> List[Dict[str, Union[str, List[st
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"El archivo '{filepath}' no se encontró.")
 
-    questions_data = []
-    current_question = {}
-    options = []
+    questions_data: List[Dict[str, Any]] = []
+    current_question: Dict[str, Any] = {}
+    options: List[str] = []
     
     # Compile regex patterns once for better performance
     option_pattern = re.compile(r'^[A-D][).]\s')
