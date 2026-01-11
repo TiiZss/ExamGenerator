@@ -4,10 +4,10 @@ Core module for question loading and parsing.
 
 import os
 import re
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 
 
-def load_questions_from_file(filepath: str) -> List[Dict[str, Any]]:
+def load_questions_from_file(filepath: str) -> List[Dict[str, Union[str, List[str]]]]:
     """Load questions from a text file and return parsed question data.
     
     Args:

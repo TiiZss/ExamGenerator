@@ -4,10 +4,10 @@ Excel exporter for exam answers.
 
 import os
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Any, cast
 
 
-def create_answers_excel(all_exam_data: List[Dict], exam_prefix: str, output_dir: str) -> None:
+def create_answers_excel(all_exam_data: List[Dict[str, Any]], exam_prefix: str, output_dir: str) -> None:
     """Create a single Excel file with all exam answers (transposed layout)."""
     try:
         import openpyxl
@@ -23,7 +23,7 @@ def create_answers_excel(all_exam_data: List[Dict], exam_prefix: str, output_dir
 
     # Create workbook and worksheet
     wb = openpyxl.Workbook()
-    ws = wb.active
+    ws = cast(Any, wb.active)  # Type hint para evitar errores de Pylance
     ws.title = f"Respuestas {exam_prefix}"
     
     # Define styles

@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, send_file, jsonify, flash, re
 from werkzeug.utils import secure_filename
 import os
 import sys
+import requests
 from pathlib import Path
 import tempfile
 import shutil
@@ -269,13 +270,13 @@ def generate_questions():
             flash('Formato de archivo no soportado', 'error')
             return redirect(url_for('generate_questions'))
         
-        if not text_content.strip():
+        if not text_content or not text_content.strip():
             flash('No se pudo extraer texto del documento', 'error')
             return redirect(url_for('generate_questions'))
         
         # Verificar caché
         questions = None
-        if use_cache:
+        if use_cache and text_content:
             questions = cache.get(text_content, num_questions, language, model, engine)
         
         # Generar preguntas si no hay caché
@@ -302,7 +303,7 @@ def generate_questions():
                 )
             
             # Guardar en caché
-            if use_cache and questions:
+            if use_cache and questions and text_content:
                 cache.set(text_content, num_questions, language, model, engine, questions)
         
         # Validar que se generaron preguntas

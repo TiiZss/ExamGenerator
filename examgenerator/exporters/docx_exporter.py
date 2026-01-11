@@ -5,7 +5,12 @@ DOCX exporter for exams.
 import os
 import random
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from docx import Document as DocumentType
+else:
+    DocumentType = Any
 
 try:
     from docx import Document
@@ -15,9 +20,14 @@ try:
     DOCX_AVAILABLE = True
 except ImportError:
     DOCX_AVAILABLE = False
+    Document = None  # type: ignore
+    Pt = None  # type: ignore
+    Inches = None  # type: ignore
+    WD_ALIGN_PARAGRAPH = None  # type: ignore
+    WD_STYLE_TYPE = None  # type: ignore
 
 
-def create_docx_document(title: str, template_path: Optional[str] = None) -> 'Document':
+def create_docx_document(title: str, template_path: Optional[str] = None) -> Any:
     """Create a new DOCX document with custom styles or from template.
     
     Args:
@@ -70,7 +80,7 @@ def create_docx_document(title: str, template_path: Optional[str] = None) -> 'Do
     return doc
 
 
-def replace_placeholders(doc: 'Document', exam_prefix: str, exam_number: int, num_questions: int):
+def replace_placeholders(doc: Any, exam_prefix: str, exam_number: int, num_questions: int):
     """Replace placeholders in the template document.
     
     Args:
@@ -134,7 +144,7 @@ def replace_placeholders(doc: 'Document', exam_prefix: str, exam_number: int, nu
                                     run.text = run.text.replace(placeholder, replacement)
 
 
-def find_content_insertion_point(doc: 'Document') -> Optional[int]:
+def find_content_insertion_point(doc: Any) -> Optional[int]:
     """Find where to insert exam content in the template.
     
     Args:

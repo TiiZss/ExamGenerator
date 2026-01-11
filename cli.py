@@ -5,13 +5,18 @@ CLI moderno para ExamGenerator usando Click.
 """
 
 import click
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.progress import Progress, SpinnerColumn, TextColumn
 from pathlib import Path
 
-console = Console()
+try:
+    from rich.console import Console
+    from rich.table import Table
+    from rich.panel import Panel
+    from rich.progress import Progress, SpinnerColumn, TextColumn
+    RICH_AVAILABLE = True
+    console = Console()
+except ImportError:
+    RICH_AVAILABLE = False
+    console = None  # type: ignore
 
 
 @click.group()
@@ -169,16 +174,52 @@ def ai_generate(document_file, num_questions, language, engine, model, output, c
             
             progress.update(task, description=f"Extrayendo texto de {document_file}...")
             
-            # Import and call AI generation
-            import qg
-            result = qg.main_generate(
-                document_path=document_file,
-                num_questions=num_questions,
-                language=language,
-                engine=engine,
-                model=model,
-                output_file=output
-            )
+            # Import qg functions
+            from qg import (extract_text_from_pdf, extract_text_from_docx, 
+                           extract_text_from_pptx, generate_questions_with_gemini, 
+                           generate_questions_with_ollama)
+            
+            # Extract text from document
+            file_ext = Path(document_file).suffix.lower()
+            text_content = None
+            
+            if file_ext == '.pdf':
+                text_content = extract_text_from_pdf(document_file)
+            elif file_ext == '.docx':
+                text_content = extract_text_from_docx(document_file)
+            elif file_ext == '.pptx':
+                text_content = extract_text_from_pptx(document_file)
+            else:
+                console.print(f"[red]✗ Formato no soportado: {file_ext}[/red]")
+                raise click.Abort()
+            
+            if not text_content:
+                console.print("[red]✗ No se pudo extraer texto del documento[/red]")
+                raise click.Abort()
+            
+            # Determine model
+            if model is None:
+                model = "gemini-1.5-flash" if engine == "gemini" else "llama2"
+            
+            # Generate questions
+            progress.update(task, description=f"Generando preguntas con {engine}...")
+            
+            questions = None
+            if engine == 'gemini':
+                questions = generate_questions_with_gemini(
+                    text_content, num_questions, language, model)
+            else:  # ollama
+                questions = generate_questions_with_ollama(
+                    text_content, num_questions, language, model, 
+                    "http://localhost:11434")
+            
+            if not questions:
+                console.print("[red]✗ No se pudieron generar preguntas[/red]")
+                raise click.Abort()
+            
+            # Save to file
+            with open(output, 'w', encoding='utf-8') as f:
+                f.write(questions)
         
         # Success message
         console.print()
