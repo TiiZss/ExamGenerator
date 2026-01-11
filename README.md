@@ -10,8 +10,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/TiiZss/ExamGenerator?style=social)](https://github.com/TiiZss/ExamGenerator/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/TiiZss/ExamGenerator)](https://github.com/TiiZss/ExamGenerator/issues)
 [![Changelog](https://img.shields.io/badge/📝-Changelog-blue)](docs/CHANGELOG.md)
-
-[![Buy Me A Coffee](https://img.shields.io/badge/☕-Buy%20me%20a%20coffee-orange?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/tiizss)
+[![Buy Me A Coffee](https://img.shields.io/badge/☕-Buy%20me%20a%20coffee-orange?logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/tiizss)
 
 ---
 
