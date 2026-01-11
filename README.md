@@ -177,8 +177,6 @@ uv run python run_web.py
 - 📊 Ver estadísticas del caché
 - 🗑️ Limpiar caché antiguo
 
-````
-
 ### **Generador Principal (eg.py)**
 
 #### **Sintaxis Básica**
