@@ -1,0 +1,279 @@
+¿Cuántos créditos ECTS tiene la asignatura "Seguridad en Aplicaciones Móviles y Web" impartida por el Prof. Tomás Isasia Infante?
+A) 1 ECTS
+B) 2 ECTS
+C) 3 ECTS
+D) 4 ECTS
+ANSWER: D)
+
+¿Cuál es una de las especializaciones académicas del Prof. Tomás Isasia Infante?
+A) Diseño Gráfico
+B) Gestión de Sistemas Informáticos en instituciones sanitarias
+C) Ingeniería Civil
+D) Arquitectura de Software
+ANSWER: B)
+
+Además de su faceta profesional, ¿qué otra actividad personal menciona el Prof. Tomás Isasia Infante?
+A) Pintor de paisajes
+B) Jugador de golf ocasional
+C) Escritor de novelas
+D) Astrónomo aficionado
+ANSWER: B)
+
+Según el texto, ¿cómo realizan la mayoría de las personas sus operaciones actualmente?
+A) Exclusivamente por llamadas telefónicas
+B) A través de un dispositivo usando una aplicación móvil o web
+C) Visitando oficinas físicas únicamente
+D) Mediante correo postal
+ANSWER: B)
+
+¿Dónde residen la mayoría de los datos que crean contenido dinámico para los usuarios?
+A) En el dispositivo personal del usuario
+B) En servidores web
+C) En discos duros externos
+D) En papel impreso
+ANSWER: B)
+
+A pesar de que el canal de transmisión está cifrado, ¿dónde persisten principalmente las vulnerabilidades?
+A) En el hardware del usuario
+B) En el del servidor
+C) En el sistema operativo del móvil
+D) En la red de telecomunicaciones
+ANSWER: B)
+
+¿Qué permite la asignatura "Seguridad en Aplicaciones Móviles y Web" al alumno conocer?
+A) Las últimas tendencias en diseño web
+B) Los diferentes sistemas existentes que deben ser protegidos
+C) Las técnicas de marketing digital
+D) La historia de la informática
+ANSWER: B)
+
+¿Cuál de los siguientes temas forma parte del temario de la asignatura?
+A) Finanzas personales
+B) Defensa en profundidad
+C) Historia del arte digital
+D) Mecánica cuántica
+ANSWER: B)
+
+El temario de la asignatura incluye el estudio de una versión específica del OWASP Top Ten. ¿Cuál es?
+A) OWASP Top Ten 2010
+B) OWASP Top Ten 2013
+C) OWASP Top Ten 2021
+D) OWASP Top Ten 2007
+ANSWER: C)
+
+¿Qué aspecto importante para la prevención de vulnerabilidades se aborda en el temario de la asignatura?
+A) Gestión de proyectos
+B) Prevención de vulnerabilidad desde el Código
+C) Optimización de bases de datos
+D) Diseño de interfaces de usuario
+ANSWER: B)
+
+¿Cuál es uno de los objetivos principales de esta asignatura para el alumno?
+A) Convertirse en un desarrollador de videojuegos
+B) Introducirse en el manejo de herramientas para el análisis de vulnerabilidades
+C) Aprender a reparar ordenadores
+D) Entender la sociología de internet
+ANSWER: B)
+
+Para el análisis de vulnerabilidades, ¿en qué plataformas introduce la asignatura al alumno en el manejo de herramientas?
+A) Solo en plataformas de escritorio
+B) En servidores web, servicios web y plataformas móviles
+C) Únicamente en bases de datos
+D) Exclusivamente en sistemas operativos embebidos
+ANSWER: B)
+
+Además del manejo de herramientas, ¿qué conceptos básicos enseña la asignatura?
+A) Técnicas de edición de video
+B) Seguridad en aplicaciones web y móviles
+C) Programación en lenguajes de bajo nivel
+D) Estrategias de publicidad online
+ANSWER: B)
+
+¿Cuántas horas de esfuerzo se requiere del alumno fuera del aula para esta asignatura?
+A) Aproximadamente 10 horas
+B) Unas 30 horas
+C) Unas 60 horas
+D) Más de 100 horas
+ANSWER: C)
+
+¿Qué otro aspecto relacionado con la seguridad se menciona en el temario para entender mejor las amenazas?
+A) La evolución de los sistemas operativos
+B) El perfil y perspectiva de un atacante
+C) La historia de internet
+D) La economía digital
+ANSWER: B)
+
+¿Quién es uno de los profesores de la asignatura "Seguridad en Aplicaciones Móviles y Web"?
+A) Prof. Miguel Ángel Ruiz
+B) Prof. Tomás Isasia Infante
+C) Prof. Carlos Gómez Pérez
+D) Prof. Ana María López
+ANSWER: B)
+
+¿Cuántos créditos ECTS tiene la asignatura "Seguridad en Aplicaciones Móviles y Web"?
+A) 3 ECTS
+B) 4 ECTS
+C) 5 ECTS
+D) 6 ECTS
+ANSWER: B)
+
+Según el texto, ¿en qué está especializado el Prof. Tomás Isasia Infante?
+A) Ingeniería de Software y Bases de Datos
+B) Gestión de Sistemas Informáticos en instituciones sanitarias por la UEM y Ciberseguridad
+C) Redes y Telecomunicaciones
+D) Diseño Gráfico y Experiencia de Usuario
+ANSWER: B)
+
+¿Cómo realiza la mayoría de las personas sus operaciones actualmente, según el texto?
+A) Principalmente mediante llamadas telefónicas tradicionales
+B) Exclusivamente a través de dispositivos de escritorio
+C) Utilizando una aplicación móvil o mediante una aplicación web
+D) Enviando cartas o faxes
+ANSWER: C)
+
+¿Dónde reside la mayoría de los datos que crean contenido dinámico para los usuarios?
+A) En dispositivos de almacenamiento local de los usuarios
+B) En servidores web
+C) En copias de seguridad en la nube sin cifrar
+D) En sistemas operativos de escritorio
+ANSWER: B)
+
+A pesar de que el canal de transmisión está cifrado, ¿dónde siguen existiendo principalmente vulnerabilidades, según el texto?
+A) En el dispositivo del usuario final
+B) En el del servidor
+C) En el sistema operativo del cliente
+D) En el software antivirus
+ANSWER: B)
+
+¿Cuál es uno de los propósitos principales de la asignatura "Seguridad en Aplicaciones Móviles y Web"?
+A) Enseñar a los alumnos a programar nuevas aplicaciones
+B) Permitir al alumno conocer los diferentes sistemas existentes que deben ser protegidos
+C) Enfocarse únicamente en la seguridad del hardware
+D) Explicar cómo diseñar interfaces de usuario amigables
+ANSWER: B)
+
+¿Cuál de los siguientes temas forma parte del temario de la asignatura?
+A) Desarrollo de videojuegos 3D
+B) Entendiendo el alcance de la Seguridad
+C) Historia de la informática
+D) Principios de robótica
+ANSWER: B)
+
+¿Qué estándar o proyecto de seguridad se menciona específicamente en el temario?
+A) ISO 27001
+B) NIST Cybersecurity Framework
+C) OWASP Top Ten 2021
+D) GDPR Compliance
+ANSWER: C)
+
+¿Qué aspecto del "enemigo" se aborda en el temario de la asignatura?
+A) Su historia y evolución
+B) Perfil y perspectiva de un atacante
+C) Sus motivaciones personales no relacionadas con la seguridad
+D) Cómo un atacante desarrolla software legítimo
+ANSWER: B)
+
+¿Qué proyecto de seguridad móvil se incluye en el temario de la asignatura?
+A) Google Play Protect Guidelines
+B) OWASP Mobile Security Project: Top 10 Mobile Risk
+C) Apple App Store Security Standards
+D) Android Enterprise Recommended
+ANSWER: B)
+
+Uno de los objetivos de la asignatura es introducir al alumno en el manejo de herramientas para el análisis de vulnerabilidades en:
+A) Sistemas de control industrial
+B) Redes sociales
+C) Servidores web, servicios web y plataformas móviles
+D) Hardware de red
+ANSWER: C)
+
+Además del manejo de herramientas, ¿qué otro aspecto fundamental busca enseñar la asignatura a los alumnos?
+A) Conceptos avanzados de inteligencia artificial
+B) Conceptos básicos en torno a la seguridad en aplicaciones web y móviles
+C) Técnicas de marketing digital
+D) Estrategias de desarrollo de software ágil
+ANSWER: B)
+
+¿Qué tipo de actividades se pueden desarrollar para comprobar la seguridad, según los objetivos de la asignatura?
+A) Campañas de publicidad
+B) Pruebas de usabilidad
+C) Pruebas que se pueden desarrollar para comprobar dicha seguridad
+D) Estudios de mercado
+ANSWER: C)
+
+¿Cuántas horas de esfuerzo fuera del aula requiere esta asignatura?
+A) Aproximadamente 10 horas
+B) Unas 30 horas
+C) Unas 60 horas
+D) Más de 100 horas
+ANSWER: C)
+
+¿Qué especialización adicional posee el Prof. Tomás Isasia Infante además de su ingeniería técnica informática?
+A) Desarrollo de Software
+B) Gestión de Sistemas Informáticos en instituciones sanitarias y Ciberseguridad
+C) Diseño Gráfico
+D) Redes y Telecomunicaciones
+ANSWER: B)
+
+¿Cuántos créditos ECTS tiene la asignatura "Seguridad en Aplicaciones Móviles y Web"?
+A) 1
+B) 2
+C) 4
+D) 6
+ANSWER: C)
+
+Según el texto, ¿dónde residen principalmente las vulnerabilidades a pesar de que el canal de transmisión esté cifrado?
+A) En el dispositivo del usuario
+B) En los servidores
+C) En el software de cifrado
+D) En la conexión a internet
+ANSWER: B)
+
+¿Qué permite al alumno la asignatura "Seguridad en Aplicaciones Móviles y Web" conocer sobre los sistemas existentes?
+A) Sus características de diseño
+B) Qué hardware comprar
+C) Qué sistemas deben ser protegidos, incluyendo hardware y aplicaciones
+D) Cómo desarrollar nuevas aplicaciones
+ANSWER: C)
+
+¿Qué versiones de OWASP Top Ten se mencionan en el temario de la asignatura?
+A) OWASP Top Ten 2017 y 2019
+B) OWASP Top Ten 2020 y 2022
+C) OWASP Top Ten 2021 y 2018
+D) Solo OWASP Top Ten 2021
+ANSWER: C)
+
+¿Qué aspecto relacionado con un atacante se incluye en el temario de la asignatura?
+A) Las motivaciones psicológicas de un atacante
+B) El perfil y la perspectiva de un atacante
+C) La legislación contra atacantes
+D) La historia de los ataques informáticos
+ANSWER: B)
+
+Uno de los objetivos de la asignatura es introducir al alumno en el manejo de herramientas para el análisis de vulnerabilidades en:
+A) Sistemas operativos y bases de datos
+B) Servidores web, servicios web y plataformas móviles
+C) Redes empresariales y firewalls
+D) Dispositivos IoT y smart home
+ANSWER: B)
+
+Además del manejo de herramientas, ¿qué más busca enseñar la asignatura según su objetivo?
+A) Conceptos avanzados de criptografía
+B) Conceptos básicos de seguridad en aplicaciones web y móviles, amenazas y pruebas de seguridad
+C) Diseño de interfaces de usuario seguras
+D) Programación segura en diferentes lenguajes
+ANSWER: B)
+
+¿Cuántas horas de esfuerzo fuera del aula requiere esta asignatura?
+A) 20 horas
+B) 40 horas
+C) 60 horas
+D) 80 horas
+ANSWER: C)
+
+¿Quiénes son los profesores que imparten la asignatura "Seguridad en Aplicaciones Móviles y Web"?
+A) Prof. Tomás Isasia Infante y Prof. Jaime José López Ruiz
+B) Solo Prof. Tomás Isasia Infante
+C) Solo Prof. Jaime José López Ruiz
+D) Los nombres no se mencionan en el texto
+ANSWER: A)

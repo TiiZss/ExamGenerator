@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>¡Bienvenido a ExamGenerator!</h2>
+    <p>Sistema completo para generación de exámenes aleatorios con soporte de inteligencia artificial.</p>
+</div>
+
+<div class="grid">
+    <div class="card feature">
+        <div class="feature-icon">📋</div>
+        <h3>Generar Exámenes</h3>
+        <p>Crea exámenes aleatorios desde un archivo de preguntas existente.</p>
+        <br>
+        <a href="{{ url_for('generate_exams') }}" class="btn">Comenzar</a>
+    </div>
+    
+    <div class="card feature">
+        <div class="feature-icon">🤖</div>
+        <h3>IA - Generar Preguntas</h3>
+        <p>Genera preguntas automáticamente desde PDFs, DOCX o PPTX usando IA.</p>
+        <br>
+        <a href="{{ url_for('generate_questions') }}" class="btn">Comenzar</a>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 30px;">
+    <h2>✨ Características</h2>
+    <ul style="list-style: none; padding-left: 0;">
+        <li style="padding: 10px 0;">✅ Generación determinística (mismas preguntas = mismo orden)</li>
+        <li style="padding: 10px 0;">✅ Múltiples formatos de exportación (TXT, DOCX, PDF, Excel)</li>
+        <li style="padding: 10px 0;">✅ Soporte para plantillas DOCX personalizadas</li>
+        <li style="padding: 10px 0;">✅ IA dual: Google Gemini y Ollama local</li>
+        <li style="padding: 10px 0;">✅ Caché inteligente para preguntas de IA</li>
+        <li style="padding: 10px 0;">✅ Estadísticas y análisis de exámenes</li>
+        <li style="padding: 10px 0;">✅ Interfaz web y CLI</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>📊 Estadísticas del Caché</h2>
+    <div id="cache-stats">
+        <p>Cargando...</p>
+    </div>
+    <br>
+    <form method="POST" action="{{ url_for('clear_cache') }}" style="display: inline;">
+        <button type="submit" onclick="return confirm('¿Limpiar todo el caché?')">
+            🗑️ Limpiar Caché
+        </button>
+    </form>
+</div>
+
+<script>
+    // Cargar estadísticas del caché
+    fetch('/cache/stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('cache-stats').innerHTML = `
+                <p><strong>Entradas en caché:</strong> ${data.total_entries}</p>
+                <p><strong>Tamaño total:</strong> ${data.total_size_mb.toFixed(2)} MB</p>
+                <p><strong>Directorio:</strong> ${data.cache_dir}</p>
+            `;
+        })
+        .catch(error => {
+            document.getElementById('cache-stats').innerHTML = '<p>Error cargando estadísticas</p>';
+        });
+</script>
+{% endblock %}

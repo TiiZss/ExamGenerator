@@ -1,0 +1,86 @@
+# ExamGenerator - Docker ignore file
+
+# Git
+.git/
+.github/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Output directories
+Examenes_*/
+output/
+*.pdf
+*.xlsx
+*.docx
+!examples/*.docx
+!templates/*.docx
+
+# Cache
+.cache/
+*.cache
+.pytest_cache/
+.mypy_cache/
+
+# Documentation (excepto Docker docs)
+docs/
+!docs/DOCKER.md
+README.md
+CHANGELOG.md
+LICENSE
+
+# Testing
+tests/
+.coverage
+htmlcov/
+.tox/
+
+# UV cache
+.uv/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Legacy files
+eg_legacy.py
+eg_v12.py
+
+# Environment files (secretos)
+.env
+.env.*
+!.env.example

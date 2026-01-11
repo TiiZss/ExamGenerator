@@ -1,0 +1,69 @@
+¿Quién es uno de los profesores de la asignatura "Seguridad en Aplicaciones Móviles y Web"?
+A) Prof. Marcos Pérez
+B) Prof. Jaime José López Ruiz
+C) Prof. Ana García
+D) Prof. Carlos Rodríguez
+ANSWER: B)
+
+¿Cuántos créditos ECTS tiene la asignatura "Seguridad en Aplicaciones Móviles y Web"?
+A) 2 ECTS
+B) 6 ECTS
+C) 4 ECTS
+D) 8 ECTS
+ANSWER: C)
+
+Según el texto, ¿en qué está especializado el Prof. Tomás Isasia Infante?
+A) En diseño gráfico y marketing digital.
+B) En gestión de sistemas informáticos en instituciones sanitarias y Ciberseguridad.
+C) En robótica y automatización industrial.
+D) En desarrollo de videojuegos.
+ANSWER: B)
+
+Actualmente, ¿dónde reside la mayoría de los datos que crean contenido dinámico para los usuarios?
+A) En los dispositivos móviles de los usuarios.
+B) En bases de datos locales en cada empresa.
+C) En servidores web.
+D) En la nube personal de cada usuario.
+ANSWER: C)
+
+A pesar de que el canal de transmisión está cifrado, ¿dónde siguen existiendo vulnerabilidades principalmente?
+A) En los dispositivos de los usuarios.
+B) En el del servidor.
+C) En las redes de telecomunicaciones.
+D) En el software antivirus.
+ANSWER: B)
+
+¿Cuál es uno de los objetivos de la asignatura "Seguridad en Aplicaciones Móviles y Web" relacionado con herramientas?
+A) Enseñar a programar nuevas aplicaciones móviles.
+B) Introducir al alumno en el manejo de herramientas para el análisis de vulnerabilidades.
+C) Diseñar nuevas infraestructuras de servidores web.
+D) Desarrollar algoritmos de cifrado avanzados.
+ANSWER: B)
+
+¿Qué versiones de OWASP Top Ten se mencionan en el temario de la asignatura?
+A) OWASP Top Ten 2017 y 2019.
+B) OWASP Top Ten 2020 y 2022.
+C) OWASP Top Ten 2021 y 2018.
+D) OWASP Top Ten 2016 y 2023.
+ANSWER: C)
+
+¿Cuántas horas de esfuerzo se requieren fuera del aula para esta asignatura?
+A) Aproximadamente 30 horas.
+B) Aproximadamente 45 horas.
+C) Aproximadamente 60 horas.
+D) Aproximadamente 90 horas.
+ANSWER: C)
+
+Además de su formación académica, ¿qué otra faceta se menciona del Prof. Tomás Isasia Infante?
+A) Es un reconocido atleta olímpico.
+B) Es un novelista y poeta premiado.
+C) Es chef y jugador de golf ocasional.
+D) Es historiador y arqueólogo.
+ANSWER: C)
+
+Según la descripción de la asignatura, ¿qué tipos de elementos deben ser protegidos?
+A) Solo el hardware.
+B) Solo las aplicaciones móviles.
+C) Tanto el hardware como una multitud de aplicaciones.
+D) Únicamente los servidores web.
+ANSWER: C)

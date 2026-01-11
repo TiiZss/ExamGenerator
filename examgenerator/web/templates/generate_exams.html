@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Generar Exámenes - ExamGenerator{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📋 Generar Exámenes</h2>
+    <p>Sube un archivo de preguntas en formato TXT y genera exámenes aleatorios.</p>
+</div>
+
+<div class="card">
+    <h3>Formato del archivo de preguntas</h3>
+    <pre style="background: #f8f9fa; padding: 15px; border-radius: 8px; overflow-x: auto;">
+¿Pregunta 1?
+A) Opción 1
+B) Opción 2
+C) Opción 3
+D) Opción 4
+ANSWER: A)
+
+¿Pregunta 2?
+A) Opción 1
+B) Opción 2
+C) Opción 3
+D) Opción 4
+ANSWER: C)
+    </pre>
+</div>
+
+<form method="POST" enctype="multipart/form-data" class="card">
+    <div class="form-group">
+        <label for="questions_file">📁 Archivo de Preguntas (TXT):</label>
+        <input type="file" id="questions_file" name="questions_file" accept=".txt" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="exam_prefix">📝 Prefijo del Examen:</label>
+        <input type="text" id="exam_prefix" name="exam_prefix" value="Parcial" placeholder="Ej: Parcial, Final, Simulacro" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="num_exams">🔢 Número de Exámenes:</label>
+        <input type="number" id="num_exams" name="num_exams" value="3" min="1" max="100" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="questions_per_exam">❓ Preguntas por Examen:</label>
+        <input type="number" id="questions_per_exam" name="questions_per_exam" value="10" min="1" max="200" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="export_format">💾 Formato de Exportación:</label>
+        <select id="export_format" name="export_format" required onchange="toggleTemplateFields()">
+            <option value="txt">TXT</option>
+            <option value="docx">DOCX</option>
+            <option value="both">Ambos (TXT + DOCX)</option>
+        </select>
+    </div>
+    
+    <!-- Opciones de plantilla DOCX (ocultas por defecto) -->
+    <div id="template-options" style="display: none;">
+        <div class="form-group" style="background: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #b3d9ff;">
+            <label>
+                <input type="checkbox" id="use_template" name="use_template" onchange="toggleTemplateUpload()">
+                📄 Usar plantilla DOCX personalizada
+            </label>
+            <small style="display: block; color: #666; margin-top: 5px;">
+                Las plantillas permiten personalizar encabezados, logos y formato del examen.<br>
+                <strong>Placeholders disponibles:</strong> {{EXAM_NUMBER}}, {{EXAM_PREFIX}}, {{DATE}}, {{CONTENT}}, {{NUM_QUESTIONS}}, {{EXAM_TIME}}
+            </small>
+        </div>
+        
+        <div id="template-upload" style="display: none;">
+            <div class="form-group">
+                <label for="template_file">📎 Plantilla DOCX:</label>
+                <input type="file" id="template_file" name="template_file" accept=".docx">
+                <small style="display: block; color: #666; margin-top: 5px;">
+                    <strong>💡 Tip:</strong> Crea un documento Word con tu diseño y usa <code>{{CONTENT}}</code> donde quieras las preguntas.<br>
+                    Ver <a href="/templates/README.md" target="_blank" style="color: #007bff;">documentación completa</a> de placeholders.
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <button type="submit">🚀 Generar Exámenes</button>
+</form>
+
+<script>
+// Mostrar/ocultar opciones de plantilla según el formato seleccionado
+function toggleTemplateFields() {
+    const format = document.getElementById('export_format').value;
+    const templateOptions = document.getElementById('template-options');
+    
+    // Mostrar opciones de plantilla solo si el formato incluye DOCX
+    if (format === 'docx' || format === 'both') {
+        templateOptions.style.display = 'block';
+    } else {
+        templateOptions.style.display = 'none';
+        // Desmarcar checkbox si se oculta
+        document.getElementById('use_template').checked = false;
+        document.getElementById('template-upload').style.display = 'none';
+    }
+}
+
+// Mostrar/ocultar campo de subida de plantilla
+function toggleTemplateUpload() {
+    const useTemplate = document.getElementById('use_template').checked;
+    const templateUpload = document.getElementById('template-upload');
+    
+    if (useTemplate) {
+        templateUpload.style.display = 'block';
+    } else {
+        templateUpload.style.display = 'none';
+        // Limpiar archivo seleccionado
+        document.getElementById('template_file').value = '';
+    }
+}
+
+// Inicializar al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    toggleTemplateFields();
+});
+</script>
+{% endblock %}

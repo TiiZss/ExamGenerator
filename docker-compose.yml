@@ -1,0 +1,233 @@
+# ExamGenerator v12 - Docker Compose Stack
+# Prefijo de contenedores: ExGen-
+
+# Configuración global
+x-common-variables: &common-env
+  PYTHONUNBUFFERED: "1"
+  TZ: "Europe/Madrid"
+
+# ============================================
+# Servicios
+# ============================================
+services:
+  
+  # ----------------------------------------
+  # ExGen-App: Aplicación principal
+  # ----------------------------------------
+  app:
+    container_name: ExGen-App
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: examgenerator:12.20260111
+    environment:
+      <<: *common-env
+      EXAMGEN_MODE: "cli"
+      GOOGLE_API_KEY: "${GOOGLE_API_KEY:-}"
+    volumes:
+      # Volumen para archivos de preguntas
+      - ./examples:/data/questions:ro
+      # Volumen para templates
+      - ./templates:/app/templates:ro
+      # Volumen para output (exámenes generados)
+      - examgen-output:/output/exams
+      # Volumen para logs
+      - examgen-logs:/app/logs
+      # Volumen para configuración personalizada
+      - ./config.yaml:/app/config.yaml:ro
+    working_dir: /app
+    command: ["-c", "import time; time.sleep(2147483647)"]
+    restart: unless-stopped
+    networks:
+      - examgen-network
+    labels:
+      com.examgenerator.service: "cli"
+      com.examgenerator.version: "12.20260111"
+
+  # ----------------------------------------
+  # ExGen-Web: Interfaz web
+  # ----------------------------------------
+  web:
+    container_name: ExGen-Web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: examgenerator:12.20260111
+    environment:
+      <<: *common-env
+      EXAMGEN_MODE: "web"
+      FLASK_APP: "run_web.py"
+      FLASK_ENV: "${FLASK_ENV:-production}"
+      GOOGLE_API_KEY: "${GOOGLE_API_KEY:-}"
+      OLLAMA_URL: "${OLLAMA_URL:-http://ollama:11434}"
+      OLLAMA_MODEL: "${OLLAMA_MODEL:-phi3:mini}"
+    volumes:
+      # DEVELOPMENT: Montar código fuente para cambios en caliente
+      - ./examgenerator:/app/examgenerator
+      - ./qg.py:/app/qg.py
+      - ./eg.py:/app/eg.py
+      - ./cli.py:/app/cli.py
+      - ./run_web.py:/app/run_web.py
+      # Volumen para archivos de preguntas
+      - ./examples:/data/questions:ro
+      # Volumen para templates
+      - ./templates:/app/templates:ro
+      # Volumen para output
+      - examgen-output:/output/exams
+      # Volumen para logs
+      - examgen-logs:/app/logs
+      # Volumen para configuración
+      - ./config.yaml:/app/config.yaml:ro
+      # Volumen persistente para settings (API keys, etc.)
+      - examgen-config:/app/config
+    ports:
+      - "${EXAMGEN_WEB_PORT:-5000}:5000"
+    working_dir: /app
+    command: ["cli.py", "web", "--host", "0.0.0.0", "--port", "5000"]
+    restart: unless-stopped
+    networks:
+      - examgen-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - app
+      - ollama
+    labels:
+      com.examgenerator.service: "web"
+      com.examgenerator.version: "12.20260111"
+
+  # ----------------------------------------
+  # ExGen-AI-Gemini: Worker para IA con Gemini
+  # ----------------------------------------
+  ai-gemini:
+    container_name: ExGen-AI-Gemini
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: examgenerator:12.20260111
+    environment:
+      <<: *common-env
+      EXAMGEN_MODE: "ai-worker"
+      GOOGLE_API_KEY: "${GOOGLE_API_KEY:-}"
+      AI_ENGINE: "gemini"
+      AI_MODEL: "${GEMINI_MODEL:-gemini-1.5-flash}"
+    volumes:
+      - ./examples:/data/questions:ro
+      - examgen-output:/output/exams
+      - examgen-logs:/app/logs
+      - ./config.yaml:/app/config.yaml:ro
+    working_dir: /app
+    command: ["python", "-c", "print('AI Gemini Worker ready')"]
+    restart: unless-stopped
+    networks:
+      - examgen-network
+    profiles:
+      - ai
+    labels:
+      com.examgenerator.service: "ai-worker"
+      com.examgenerator.engine: "gemini"
+      com.examgenerator.version: "12.20260111"
+
+  # ----------------------------------------
+  # ExGen-Ollama: Servidor Ollama (local AI)
+  # ----------------------------------------
+  ollama:
+    container_name: ExGen-Ollama
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_MODELS: "/root/.ollama/models"
+    volumes:
+      - examgen-ollama-models:/root/.ollama
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    restart: unless-stopped
+    networks:
+      - examgen-network
+    # GPU support (uncomment if you have NVIDIA GPU)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    labels:
+      com.examgenerator.service: "ollama-server"
+      com.examgenerator.version: "latest"
+
+  # ----------------------------------------
+  # ExGen-AI-Worker: Worker para IA con Ollama
+  # ----------------------------------------
+  ai-ollama:
+    container_name: ExGen-AI-Worker
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: examgenerator:12.20260111
+    environment:
+      <<: *common-env
+      EXAMGEN_MODE: "ai-worker"
+      AI_ENGINE: "ollama"
+      AI_MODEL: "${OLLAMA_MODEL:-llama2}"
+      OLLAMA_URL: "http://ollama:11434"
+    volumes:
+      - ./examples:/data/questions:ro
+      - examgen-output:/output/exams
+      - examgen-logs:/app/logs
+      - ./config.yaml:/app/config.yaml:ro
+    working_dir: /app
+    command: ["python", "-c", "print('AI Ollama Worker ready')"]
+    restart: unless-stopped
+    networks:
+      - examgen-network
+    depends_on:
+      - ollama
+    profiles:
+      - ai
+      - ollama
+    labels:
+      com.examgenerator.service: "ai-worker"
+      com.examgenerator.engine: "ollama"
+      com.examgenerator.version: "12.20260111"
+
+# ============================================
+# Volúmenes persistentes
+# ============================================
+volumes:
+  examgen-output:
+    name: ExGen-Output
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./output
+  
+  examgen-logs:
+    name: ExGen-Logs
+    driver: local
+  
+  examgen-ollama-models:
+    name: ExGen-Ollama-Models
+    driver: local
+  
+  examgen-config:
+    name: ExGen-Config
+    driver: local
+
+# ============================================
+# Red interna
+# ============================================
+networks:
+  examgen-network:
+    name: ExGen-Network
+    driver: bridge

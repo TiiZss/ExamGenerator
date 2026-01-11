@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}Generar Preguntas con IA - ExamGenerator{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🤖 Generar Preguntas con IA</h2>
+    <p>Sube un documento (PDF, DOCX, PPTX) y genera preguntas automáticamente usando inteligencia artificial.</p>
+</div>
+
+<div class="card">
+    <h3>⚙️ Motores de IA Disponibles</h3>
+    <ul>
+        <li><strong>Google Gemini:</strong> IA en la nube (requiere API key)</li>
+        <li><strong>Ollama:</strong> IA local (requiere Ollama instalado)</li>
+    </ul>
+</div>
+
+<form method="POST" enctype="multipart/form-data" class="card" id="question-form">
+    <div class="form-group">
+        <label for="document">📄 Documento (PDF, DOCX, PPTX):</label>
+        <input type="file" id="document" name="document" accept=".pdf,.docx,.pptx" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="num_questions">🔢 Número de Preguntas:</label>
+        <input type="number" id="num_questions" name="num_questions" value="10" min="1" max="50" required>
+    </div>
+    
+    <div class="form-group">
+        <label for="language">🌍 Idioma:</label>
+        <select id="language" name="language" required>
+            <option value="español" selected>Español</option>
+            <option value="english">English</option>
+            <option value="français">Français</option>
+            <option value="português">Português</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="engine">🔧 Motor de IA:</label>
+        <select id="engine" name="engine" onchange="updateModelOptions()" required>
+            {% if gemini_available %}
+            <option value="gemini">Google Gemini</option>
+            <option value="ollama" selected>Ollama (Local)</option>
+            {% else %}
+            <option value="ollama" selected>Ollama (Local)</option>
+            <option value="gemini" disabled>Google Gemini (⚠️ Configurar API key)</option>
+            {% endif %}
+        </select>
+        {% if not gemini_available %}
+        <small style="color: #dc3545;">⚠️ Para usar Gemini, configura tu API key en <a href="{{ url_for('settings') }}" style="color: #667eea;">Configuración</a></small>
+        {% endif %}
+    </div>
+    
+    <div class="form-group">
+        <label for="model">🎯 Modelo:</label>
+        <select id="model" name="model" required>
+            <option value="models/gemini-2.5-flash" selected>Gemini 2.5 Flash (recomendado)</option>
+            <option value="models/gemini-2.5-pro">Gemini 2.5 Pro (más potente)</option>
+            <option value="models/gemini-flash-latest">Gemini Flash Latest</option>
+            <option value="models/gemini-pro-latest">Gemini Pro Latest</option>
+        </select>
+        <small id="model-status" style="display:none; color: #666;"></small>
+    </div>
+    
+    <div class="form-group checkbox-group">
+        <input type="checkbox" id="use_cache" name="use_cache" checked>
+        <label for="use_cache" style="margin-bottom: 0;">⚡ Usar caché (evita regenerar preguntas idénticas)</label>
+    </div>
+    
+    <button type="submit" id="submit-btn">🚀 Generar Preguntas</button>
+</form>
+
+<!-- Indicador de progreso -->
+<div id="progress-container" style="display: none;" class="card">
+    <h3>⏳ Generando Preguntas...</h3>
+    <div style="background: #e9ecef; border-radius: 10px; height: 30px; overflow: hidden; margin: 20px 0;">
+        <div id="progress-bar" style="background: linear-gradient(90deg, #007bff, #0056b3); height: 100%; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+            <span id="progress-text">0%</span>
+        </div>
+    </div>
+    <div id="progress-status" style="text-align: center; color: #666;">
+        🤖 Iniciando generación con IA...
+    </div>
+</div>
+
+<script>
+    async function loadOllamaModels() {
+        const modelSelect = document.getElementById('model');
+        const statusElement = document.getElementById('model-status');
+        
+        try {
+            statusElement.style.display = 'block';
+            statusElement.textContent = '⏳ Cargando modelos de Ollama...';
+            statusElement.style.color = '#666';
+            
+            const response = await fetch('/api/ollama/models');
+            const data = await response.json();
+            
+            if (data.success && data.models.length > 0) {
+                // Limpiar y agregar modelos reales
+                modelSelect.innerHTML = '';
+                
+                data.models.forEach((model, index) => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    if (index === 0) option.selected = true;
+                    modelSelect.appendChild(option);
+                });
+                
+                statusElement.textContent = `✅ ${data.count} modelo(s) disponible(s)`;
+                statusElement.style.color = '#28a745';
+                setTimeout(() => statusElement.style.display = 'none', 3000);
+            } else {
+                // Si falla, usar modelos por defecto
+                modelSelect.innerHTML = `
+                    <option value="phi3:mini" selected>phi3:mini (recomendado)</option>
+                    <option value="llama3.2:1b">llama3.2:1b</option>
+                    <option value="gemma2:2b">gemma2:2b</option>
+                    <option value="llama2">llama2</option>
+                    <option value="mistral">mistral</option>
+                `;
+                
+                statusElement.textContent = '⚠️ No se pudo cargar la lista. Modelos por defecto mostrados.';
+                statusElement.style.color = '#ffc107';
+                setTimeout(() => statusElement.style.display = 'none', 5000);
+            }
+        } catch (error) {
+            console.error('Error cargando modelos:', error);
+            
+            // Fallback a modelos por defecto
+            modelSelect.innerHTML = `
+                <option value="phi3:mini" selected>phi3:mini (recomendado)</option>
+                <option value="llama3.2:1b">llama3.2:1b</option>
+                <option value="gemma2:2b">gemma2:2b</option>
+                <option value="llama2">llama2</option>
+                <option value="mistral">mistral</option>
+            `;
+            
+            statusElement.textContent = '❌ Error de conexión. Modelos por defecto mostrados.';
+            statusElement.style.color = '#dc3545';
+            setTimeout(() => statusElement.style.display = 'none', 5000);
+        }
+    }
+    
+    function updateModelOptions() {
+        const engine = document.getElementById('engine').value;
+        const modelSelect = document.getElementById('model');
+        const statusElement = document.getElementById('model-status');
+        
+        if (engine === 'gemini') {
+            statusElement.style.display = 'none';
+            modelSelect.innerHTML = `
+                <option value="models/gemini-2.5-flash" selected>Gemini 2.5 Flash (recomendado)</option>
+                <option value="models/gemini-2.5-pro">Gemini 2.5 Pro (más potente)</option>
+                <option value="models/gemini-flash-latest">Gemini Flash Latest</option>
+                <option value="models/gemini-pro-latest">Gemini Pro Latest</option>
+            `;
+        } else {
+            // Cargar modelos dinámicamente de Ollama
+            loadOllamaModels();
+        }
+    }
+    
+    // Cargar modelos de Ollama al inicio si está seleccionado
+    document.addEventListener('DOMContentLoaded', function() {
+        const engine = document.getElementById('engine').value;
+        if (engine === 'ollama') {
+            loadOllamaModels();
+        }
+        
+        // Manejar envío del formulario con AJAX
+        const form = document.getElementById('question-form');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevenir envío tradicional
+            
+            const numQuestions = parseInt(document.getElementById('num_questions').value);
+            const submitBtn = document.getElementById('submit-btn');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const progressStatus = document.getElementById('progress-status');
+            
+            // Mostrar indicador de progreso
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Generando...';
+            progressContainer.style.display = 'block';
+            form.style.display = 'none'; // Ocultar formulario
+            
+            // Scroll hacia el indicador
+            progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Simular progreso (estimación)
+            let progress = 0;
+            const timePerQuestion = 7000; // 7 segundos por pregunta (estimado para Ollama)
+            const totalTime = numQuestions * timePerQuestion;
+            const updateInterval = Math.max(100, totalTime / 100); // Min 100ms
+            
+            const progressInterval = setInterval(function() {
+                if (progress < 95) { // Dejar el 5% final para cuando realmente termine
+                    progress += 1;
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = progress + '%';
+                    
+                    // Actualizar mensajes de estado
+                    if (progress < 20) {
+                        progressStatus.textContent = '📄 Extrayendo texto del documento...';
+                    } else if (progress < 40) {
+                        progressStatus.textContent = '🤖 Enviando a IA para análisis...';
+                    } else if (progress < 70) {
+                        progressStatus.textContent = `💭 Generando pregunta ${Math.floor(progress / 10)} de ${numQuestions}...`;
+                    } else {
+                        progressStatus.textContent = '✍️ Formateando respuestas en formato AIKEN...';
+                    }
+                }
+            }, updateInterval);
+            
+            try {
+                // Enviar formulario con AJAX
+                const formData = new FormData(form);
+                const response = await fetch('/generate-questions', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                clearInterval(progressInterval);
+                
+                if (response.ok) {
+                    // Completar progreso
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '100%';
+                    progressStatus.textContent = '✅ ¡Preguntas generadas exitosamente!';
+                    progressStatus.style.color = '#28a745';
+                    progressStatus.style.fontWeight = 'bold';
+                    
+                    // Descargar archivo
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `preguntas_${new Date().getTime()}.txt`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    // Resetear formulario después de 3 segundos
+                    setTimeout(function() {
+                        form.reset();
+                        form.style.display = 'block';
+                        progressContainer.style.display = 'none';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '🚀 Generar Preguntas';
+                        progressBar.style.width = '0%';
+                        progressText.textContent = '0%';
+                        progressStatus.style.color = '#666';
+                        progressStatus.style.fontWeight = 'normal';
+                    }, 3000);
+                } else {
+                    // Error
+                    clearInterval(progressInterval);
+                    const errorText = await response.text();
+                    progressBar.style.width = '100%';
+                    progressBar.style.background = '#dc3545';
+                    progressText.textContent = 'Error';
+                    progressStatus.textContent = '❌ Error al generar preguntas. Verifica los logs.';
+                    progressStatus.style.color = '#dc3545';
+                    
+                    // Mostrar formulario de nuevo
+                    setTimeout(function() {
+                        form.style.display = 'block';
+                        progressContainer.style.display = 'none';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '🚀 Generar Preguntas';
+                        progressBar.style.background = 'linear-gradient(90deg, #007bff, #0056b3)';
+                    }, 5000);
+                }
+            } catch (error) {
+                clearInterval(progressInterval);
+                console.error('Error:', error);
+                progressBar.style.width = '100%';
+                progressBar.style.background = '#dc3545';
+                progressText.textContent = 'Error';
+                progressStatus.textContent = '❌ Error de conexión: ' + error.message;
+                progressStatus.style.color = '#dc3545';
+                
+                setTimeout(function() {
+                    form.style.display = 'block';
+                    progressContainer.style.display = 'none';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '🚀 Generar Preguntas';
+                    progressBar.style.background = 'linear-gradient(90deg, #007bff, #0056b3)';
+                }, 5000);
+            }
+        });
+    });
+</script>
+{% endblock %}

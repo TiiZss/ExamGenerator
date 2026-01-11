@@ -1,0 +1,129 @@
+[project]
+name = "examgenerator"
+version = "12.20260111"
+description = "Generador avanzado de exámenes aleatorios con IA - Arquitectura Modular"
+authors = [
+    {name = "TiiZss", email = "tiizss@github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "GPL-3.0"}
+keywords = ["exam", "generator", "ai", "education", "quiz", "docx", "gemini", "ollama"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    # Core dependencies
+    "python-docx>=1.1.0",
+    "openpyxl>=3.1.0",
+    # Configuration
+    "pyyaml>=6.0.1",
+    # AI engines
+    "google-generativeai>=0.3.0",
+    # Document processing
+    "pypdf>=3.17.0",
+    "python-pptx>=0.6.23",
+    "requests>=2.31.0",
+    # Web interface
+    "flask>=3.0.0",
+    "werkzeug>=3.0.1",
+    # PDF export
+    "reportlab>=4.0.7",
+    # Progress bars
+    "tqdm>=4.66.1",
+    # Type extensions
+    "typing-extensions>=4.8.0",
+    "click>=8.1.8",
+    "rich>=14.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.12.0",
+    "flake8>=6.1.0",
+    "mypy>=1.7.1",
+    "types-requests>=2.31.0",
+    "types-pyyaml>=6.0.12",
+]
+
+# CLI enhancements
+cli = [
+    "click>=8.1.0",
+    "rich>=13.7.0",
+]
+
+# Additional exporters
+exporters = [
+    "jinja2>=3.1.0",
+    "markdown>=3.5.0",
+]
+
+# Performance
+performance = [
+    "joblib>=1.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/TiiZss/ExamGenerator"
+Repository = "https://github.com/TiiZss/ExamGenerator"
+Documentation = "https://github.com/TiiZss/ExamGenerator#readme"
+"Bug Tracker" = "https://github.com/TiiZss/ExamGenerator/issues"
+
+[project.scripts]
+examgen = "eg:main"
+examgen-ai = "qg:main"
+examgen-web = "run_web:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["examgenerator"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=examgenerator --cov-report=term-missing"
+
+[tool.black]
+line-length = 100
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | _build
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [".git", ".venv", "__pycache__", "build", "dist"]

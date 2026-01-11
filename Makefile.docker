@@ -1,0 +1,228 @@
+# ExamGenerator - Docker Makefile
+# Comandos simplificados para gestionar el stack Docker
+
+.PHONY: help build up down restart logs shell web generate ai-generate clean prune
+
+# ============================================
+# Variables
+# ============================================
+PROJECT_NAME = examgenerator
+COMPOSE = docker-compose
+IMAGE_NAME = examgenerator:12.20260111
+
+# ============================================
+# Ayuda
+# ============================================
+help: ## Mostrar esta ayuda
+	@echo "ExamGenerator - Docker Commands"
+	@echo "================================"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+# ============================================
+# Build & Deploy
+# ============================================
+build: ## Construir las imágenes Docker
+	@echo "🔨 Construyendo imágenes..."
+	$(COMPOSE) build --no-cache
+
+build-fast: ## Construir (sin cache solo si necesario)
+	@echo "⚡ Construyendo rápido..."
+	$(COMPOSE) build
+
+up: ## Iniciar todos los contenedores
+	@echo "🚀 Iniciando ExamGenerator stack..."
+	$(COMPOSE) up -d app web
+	@echo "✅ Stack iniciado!"
+	@echo "📊 Web UI: http://localhost:5000"
+	@$(COMPOSE) ps
+
+up-ai: ## Iniciar stack completo con IA (Gemini + Ollama)
+	@echo "🚀 Iniciando stack completo con IA..."
+	$(COMPOSE) --profile ai up -d
+	@echo "✅ Stack con IA iniciado!"
+	@$(COMPOSE) ps
+
+up-ollama: ## Iniciar stack con Ollama
+	@echo "🚀 Iniciando stack con Ollama..."
+	$(COMPOSE) --profile ollama up -d
+	@echo "✅ Stack con Ollama iniciado!"
+	@$(COMPOSE) ps
+
+down: ## Detener todos los contenedores
+	@echo "🛑 Deteniendo contenedores..."
+	$(COMPOSE) down
+
+restart: ## Reiniciar todos los contenedores
+	@echo "🔄 Reiniciando..."
+	$(COMPOSE) restart
+
+# ============================================
+# Logs & Monitoring
+# ============================================
+logs: ## Ver logs de todos los contenedores
+	$(COMPOSE) logs -f
+
+logs-app: ## Ver logs del contenedor App
+	$(COMPOSE) logs -f app
+
+logs-web: ## Ver logs del contenedor Web
+	$(COMPOSE) logs -f web
+
+logs-ai: ## Ver logs de contenedores IA
+	$(COMPOSE) logs -f ai-gemini ai-ollama
+
+ps: ## Listar contenedores en ejecución
+	@$(COMPOSE) ps
+
+# ============================================
+# Shell & Debugging
+# ============================================
+shell: ## Abrir shell en el contenedor App
+	@echo "🐚 Abriendo shell en ExGen-App..."
+	$(COMPOSE) exec app /bin/bash
+
+shell-web: ## Abrir shell en el contenedor Web
+	@echo "🐚 Abriendo shell en ExGen-Web..."
+	$(COMPOSE) exec web /bin/bash
+
+shell-root: ## Abrir shell como root en App
+	@echo "🐚 Abriendo shell root en ExGen-App..."
+	$(COMPOSE) exec --user root app /bin/bash
+
+# ============================================
+# Comandos de ExamGenerator
+# ============================================
+info: ## Mostrar información del sistema
+	@echo "ℹ️ Información del sistema..."
+	$(COMPOSE) run --rm app cli.py info
+
+validate: ## Validar archivo de preguntas (uso: make validate FILE=preguntas.txt)
+	@if [ -z "$(FILE)" ]; then \
+		echo "❌ Error: Especifica FILE=ruta/archivo.txt"; \
+		exit 1; \
+	fi
+	@echo "✅ Validando $(FILE)..."
+	$(COMPOSE) run --rm app cli.py validate /data/questions/$(FILE)
+
+generate: ## Generar exámenes (uso: make generate FILE=preguntas.txt PREFIX=Parcial NUM=3 Q=10)
+	@if [ -z "$(FILE)" ] || [ -z "$(PREFIX)" ]; then \
+		echo "❌ Error: Especifica FILE=archivo.txt PREFIX=Parcial [NUM=3] [Q=10]"; \
+		exit 1; \
+	fi
+	@echo "📝 Generando exámenes..."
+	$(COMPOSE) run --rm -v $$(pwd)/output:/output app cli.py generate \
+		/data/questions/$(FILE) $(PREFIX) $(or $(NUM),3) $(or $(Q),10) \
+		--format both --answers html
+
+ai-generate: ## Generar preguntas con IA (uso: make ai-generate FILE=documento.pdf NUM=10)
+	@if [ -z "$(FILE)" ]; then \
+		echo "❌ Error: Especifica FILE=documento.pdf [NUM=10]"; \
+		exit 1; \
+	fi
+	@echo "🤖 Generando preguntas con IA..."
+	$(COMPOSE) run --rm ai-gemini cli.py ai-generate \
+		/data/questions/$(FILE) --num-questions $(or $(NUM),10) \
+		--output /output/preguntas_ia.txt
+
+web: ## Abrir navegador en la interfaz web
+	@echo "🌐 Abriendo http://localhost:5000"
+	@python -m webbrowser http://localhost:5000 2>/dev/null || \
+		xdg-open http://localhost:5000 2>/dev/null || \
+		open http://localhost:5000 2>/dev/null || \
+		echo "Abre manualmente: http://localhost:5000"
+
+# ============================================
+# Limpieza
+# ============================================
+clean: ## Limpiar outputs generados
+	@echo "🧹 Limpiando archivos generados..."
+	rm -rf output/Examenes_*
+	rm -rf output/*.txt output/*.xlsx output/*.html output/*.docx
+
+clean-logs: ## Limpiar logs
+	@echo "🧹 Limpiando logs..."
+	$(COMPOSE) exec app rm -rf /app/logs/*.log
+
+prune: ## Limpieza profunda de Docker
+	@echo "⚠️  ADVERTENCIA: Esto eliminará contenedores, imágenes y volúmenes sin usar"
+	@read -p "¿Continuar? [y/N] " -n 1 -r; \
+	echo; \
+	if [[ $$REPLY =~ ^[Yy]$$ ]]; then \
+		docker system prune -af --volumes; \
+		echo "✅ Limpieza completada"; \
+	fi
+
+# ============================================
+# Instalación de modelos Ollama
+# ============================================
+ollama-pull: ## Descargar modelo Ollama (uso: make ollama-pull MODEL=llama2)
+	@if [ -z "$(MODEL)" ]; then \
+		echo "❌ Error: Especifica MODEL=nombre_modelo"; \
+		exit 1; \
+	fi
+	@echo "⬇️ Descargando modelo $(MODEL)..."
+	$(COMPOSE) exec ollama ollama pull $(MODEL)
+
+ollama-list: ## Listar modelos Ollama instalados
+	@echo "📋 Modelos instalados:"
+	$(COMPOSE) exec ollama ollama list
+
+ollama-rm: ## Eliminar modelo Ollama (uso: make ollama-rm MODEL=llama2)
+	@if [ -z "$(MODEL)" ]; then \
+		echo "❌ Error: Especifica MODEL=nombre_modelo"; \
+		exit 1; \
+	fi
+	$(COMPOSE) exec ollama ollama rm $(MODEL)
+
+# ============================================
+# Testing & Development
+# ============================================
+test: ## Ejecutar tests dentro del contenedor
+	@echo "🧪 Ejecutando tests..."
+	$(COMPOSE) run --rm app pytest tests/ -v
+
+dev: ## Modo desarrollo (hot reload)
+	@echo "🔥 Modo desarrollo..."
+	$(COMPOSE) -f docker-compose.yml -f docker-compose.dev.yml up
+
+# ============================================
+# Configuración
+# ============================================
+config-show: ## Mostrar configuración actual
+	$(COMPOSE) run --rm app cli.py config --show
+
+config-create: ## Crear archivo de configuración
+	$(COMPOSE) run --rm app cli.py config --create
+
+env-example: ## Crear archivo .env desde ejemplo
+	@if [ ! -f .env ]; then \
+		cp .env.example .env; \
+		echo "✅ Archivo .env creado. Edítalo con tus valores."; \
+	else \
+		echo "⚠️ .env ya existe"; \
+	fi
+
+# ============================================
+# Backup & Restore
+# ============================================
+backup: ## Crear backup de outputs
+	@echo "💾 Creando backup..."
+	@mkdir -p backups
+	@tar -czf backups/examgen-backup-$$(date +%Y%m%d-%H%M%S).tar.gz output/
+	@echo "✅ Backup creado en backups/"
+
+# ============================================
+# Ejemplos rápidos
+# ============================================
+demo: ## Demo completo: validar + generar
+	@echo "🎬 Demo de ExamGenerator..."
+	@$(MAKE) validate FILE=preguntas.txt
+	@$(MAKE) generate FILE=preguntas.txt PREFIX=Demo NUM=2 Q=5
+	@echo "✅ Demo completado. Revisa output/"
+
+# ============================================
+# Versión
+# ============================================
+version: ## Mostrar versión
+	@echo "ExamGenerator v12.20260111"
+	@echo "Docker Stack con prefijo: ExGen-"

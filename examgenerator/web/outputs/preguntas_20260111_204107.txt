@@ -1,0 +1,56 @@
+
+¿Qué componen los diferentes sistemas que pueden ser atacados en aplicaciones móviles y web?
+A) Sistema operativo del dispositivo, navegador web y servidores backend.
+B) La interfaz de usuario diseñada por el desarrollador final, la base de datos utilizada para almacenar información y los algoritmos analíticos implementados en aplicaciones propias.
+C) Servidores cloud donde se ejecutan las aplicaciones móviles y web, dispositivos IoT conectados a Internet y protocolos de comunicación como HTTPS y SSH utilizados para la seguridad del tráfico.
+D) Plataforma de desarrollo de software empleada en el proceso creativo, los frameworks técn0ns que se usan dentro del sistema operativo móvil y las estrategias empresariales aplicadas a lo largo de su ciclo vital por parte del desarrollador finalizar.
+ANSWER: A) 
+
+¿Cuál es el propósito principal para enseñar la seguridad en aplicaciones web e inversas?
+A) Para ayudar al usuario con las tareas diarias de navegación más rápida y cómoda.
+B) To understand the different systems that must be protected, including not only hardware but also a multitude of applications vulnerable to attack.
+C) Aprender sobre el diseño visual en aplicaciones web para mejorar su estética y atractivo.
+D) Para analizar cómo las tendencias actuales afectan la popularidad de ciertas aplicaciones en línea. 
+ANSWER: B)
+
+¿Qué concepto básico es fundamental al comprender el alcance completo del manejo de herramientas para análisis de vulnerabilidades?
+A) La importancia de la codificación y presentación artística dentro de las aplicaciones.
+B) Comprension de los diferentes sistemas que existen en plataformas web, como servidores backend, bases de datos, y protocolos de comunicación seguro utilizados para el análisis del tráfico.
+C) El conocimiento detallado sobre hardware específico usado por cada dispositivo móvil individualmente.
+D) La competencia en programar aplicaciones web desde cero sin ninguna herramienta externa de desarrollo o seguridad. 
+ANSWER: B)
+
+¿Cuál es la importancia del conocimiento sobre el OWASP Top Ten para prevenir vulnerabilidades?
+A) Para poder escribir código en lenguaje ensamblador y optimizar su uso computacionalmente complejo.
+B) Aprender acerca de las amenazas más comunes a la seguridad web, como inyecciones SQL y Cross-Site Scripting (XSS), que forman parte del OWASP Top Ten para evitar vulnerabilidades en el código fuente.
+C) Entender cómo funciona internamente cada aplicación móvil desde su diseño hasta la interfaz de usuario final. 
+D) Aprender las estrategias empresariales más efectivas dentro del sector tecnológico para promover una competencia sostenible y ética en línea. 
+ANSWER: B)
+
+¿Para qué se requieren unas 60 horas fuera del aula en esta asignatura de Seguridad?
+A) Dedicarse exclusivamente al estudio intensivo del hardware interno sin aplicaciones prácticas relevantes para la seguridad.
+B) Para completar el trabajo académico con una tesis personalizada que no tiene relación directa con las competencias adquiridas en la asignatura. 
+C) Investigación independiente, exploración de herramientas y experiencias prácticas para un manejo efectivo del análisis de vulnerabilidades tanto en servidores web como móviles/aplicaciones propias. D) Participar activamente en redes sociales relacionadas con la tecnología para ampliar el conocimiento a través de interacción comunitaria sin aplicación directa al análisis de vulnerabilidades. 
+ANSWER: C)
+
+¿Cuáles son los dos tipos principales que se pueden consideran como sistemas atacados en las plataformas móviles y web?
+A) Sistemas operativos complejos e inteligentes utilizados en dispositivos avanzados. 
+B) Aplicaciones propias desarrolladas por el usuario final para manejar sus necesidades específsicas de trabajo o entretenimiento, así como los servidores web que crean contenido dinámico mediante software y presentan a los usuarios en dispositivos. 
+C) Plataformas de desarrollo móvil y plataformas de escritorio tradicionales para comparar rendimientos. D) Dispositivos IoT conectados directamente al internet sin ningún tipo de medida preventiva contra ataques cibernéticos. 
+ANSWER: B)
+
+¿Qué práctica se enseña en la asignatura como parte del manejo efectivo y defensa proactiva ante amenazas?
+A) Hacking Web Servers para comprender su funcionamiento interno desde una perspectiva de ataque. 
+B) Controles activos implementados utilizando herramientas específicas para proteger contra vulnerabilidades conocidas en la seguridad web y móviles/aplicaciones propias, además del entrenamiento práctico aplicado al análisis de vulnerabilidades. 
+C) El diseño gráfico avanzado que permite a los usuarios identificar facilmente las amenazas potenciales en el tráfico web y móvil/aplicaciones propias mediante elementos visuales llamativos. D) La creación de aplicaciones móviles con funcionalidades excesivas para distraer al atacante mientras se dañan los sistemas objetivo sin medidas efectivas proactivas contra las amenazas. 
+ANSWER: B)
+
+¿Qué es el "profiling" y por qué es importante en la seguridad cibernética?
+A) El proceso de diseño personalizado para mejorar los gráficos del navegador web a través del perfil visual. 
+B) La evaluación detallada que tiene como objetivo identificar, caracterizar y comprender las amenazas potenciales basadas en el conocimiento previo sobre un atacante o una red específica para desarrollar estrategias de defensa adaptadas. C) El análisis extensivo del hardware utilizado por los dispositivos móviles individualmente, ajustándose al perfil ideal físico y funcional. D) La creación académica detallada sobre las características únicas e identidad personal de un individuo para mejorar la seguridad en redes sociales sin relación con ataques cibernéticos directos o indirectos a los sistemas objetivo. 
+ANSWER: B)
+
+¿Cómo puede ayudar el conocimiento sobre las pruebas desarrolladas por un atacante para comprobar la seguridad?
+A) Para entender cómo se hacen deporte y golf con más eficiencia, ya que es importante mantener una actitud positiva ante los desafíos. 
+B) Estableciendo protocolos de comunicación interna en el equipo educativo para facilitar la colaboración entre alumnado durante las actividades grupales no relacionadas con seguridad cibernética. C) Desarrollando y ejecutando pruebas simuladas por parte del estudiante que imitan escenarios potenzados de ataques en aplicaciones web o móviles para identificar vulnerabilidades sin causar daño real a los sistemas objetivo, utilizando conocimientos previos sobre las tácticas y estrategias cibernéticas. D) Aprendiendo la historia detrás del desarrollo de herramientas técnicas en el mundo tecnológico para una mejor adaptación cultural dentro del equipo educativo sin relación directa con pruebas prácticas de seguridad o amenazas potenciales cibernéticas. 
+ANSWER: C)

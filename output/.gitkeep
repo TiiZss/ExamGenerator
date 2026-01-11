@@ -1,0 +1,2 @@
+# Este directorio almacena los exámenes generados
+# Docker monta este directorio como volumen persistente

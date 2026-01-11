@@ -1,26 +1,37 @@
-<<<<<<< HEAD
+# ExamGenerator - Requirements
+# Version 11.20260111
+
 # Core dependencies for document generation
 python-docx>=1.1.0
 openpyxl>=3.1.0
+
+# CLI and configuration
+click>=8.1.7
+rich>=13.7.0
+pyyaml>=6.0.1
 
 # AI question generation dependencies
 google-generativeai>=0.3.0
 pypdf>=3.17.0
 python-pptx>=0.6.23
+requests>=2.31.0
 
-# Optional dependencies for enhanced functionality
-# These will be imported conditionally in the code
-=======
-# Core dependencies for document generation
-python-docx>=1.1.0
-openpyxl>=3.1.0
+# Web interface dependencies
+flask>=3.0.0
+werkzeug>=3.0.1
 
-# AI question generation dependencies
-google-generativeai>=0.3.0
-pypdf>=3.17.0
-python-pptx>=0.6.23
+# PDF export
+reportlab>=4.0.7
 
-# Optional dependencies for enhanced functionality
-# These will be imported conditionally in the code
->>>>>>> da6a17fb926a5a85bd4d383ef80408fcec706452
+# Progress bars and UX
+tqdm>=4.66.1
+
+# Development dependencies (optional)
+# Install with: pip install -r requirements.txt -r requirements-dev.txt
+# pytest>=7.4.3
+# pytest-cov>=4.1.0
+# black>=23.12.0
+# flake8>=6.1.0
+# mypy>=1.7.1
+
 typing-extensions>=4.8.0

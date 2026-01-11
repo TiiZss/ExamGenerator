@@ -1,0 +1,209 @@
+# ExamGenerator Configuration File
+# Configuración de ExamGenerator
+
+# General exam settings
+# Configuración general de exámenes
+exam:
+  # Default time per question in minutes
+  # Tiempo por defecto por pregunta en minutos
+  default_time_per_question: 1
+  
+  # Option letters to use
+  # Letras para las opciones
+  option_letters: "ABCD"
+  
+  # Default export format: txt, docx, both, excel, csv, html
+  # Formato de exportación por defecto
+  default_export_format: "txt"
+  
+  # Default answers format: txt, excel, csv, html
+  # Formato de respuestas por defecto
+  default_answers_format: "txt"
+
+# Output settings
+# Configuración de salida
+output:
+  # Output directory prefix
+  # Prefijo del directorio de salida
+  directory_prefix: "Examenes_"
+  
+  # Create subdirectories by date
+  # Crear subdirectorios por fecha
+  create_date_folders: false
+  
+  # Date format for folders (if enabled)
+  # Formato de fecha para carpetas (si está habilitado)
+  date_format: "%Y-%m-%d"
+
+# DOCX template settings
+# Configuración de plantillas DOCX
+docx:
+  # Default template path (empty for no template)
+  # Ruta de plantilla por defecto (vacío para sin plantilla)
+  default_template: ""
+  
+  # Font settings
+  # Configuración de fuentes
+  fonts:
+    title_size: 16
+    question_size: 11
+    option_size: 10
+  
+  # Spacing settings (in points)
+  # Configuración de espaciado (en puntos)
+  spacing:
+    title_after: 12
+    question_before: 6
+    question_after: 3
+    option_after: 2
+
+# AI question generation settings (qg.py)
+# Configuración de generación de preguntas con IA
+ai:
+  # Default AI engine: gemini or ollama
+  # Motor de IA por defecto
+  default_engine: "gemini"
+  
+  # Gemini settings
+  gemini:
+    # Default model
+    default_model: "gemini-1.5-flash"
+    # Alternative models: gemini-1.5-pro
+    temperature: 0.7
+    timeout: 60  # seconds
+  
+  # Ollama settings
+  ollama:
+    # Default model
+    default_model: "llama2"
+    # Alternative models: mistral, codellama
+    url: "http://localhost:11434"
+    timeout: 300  # seconds (5 minutes)
+    # Auto-start Ollama if not running
+    auto_start: true
+  
+  # Default number of questions to generate
+  # Número por defecto de preguntas a generar
+  default_num_questions: 10
+  
+  # Default language: español, english, français, etc.
+  # Idioma por defecto
+  default_language: "español"
+
+# Logging settings
+# Configuración de logs
+logging:
+  # Enable logging
+  # Activar logging
+  enabled: true
+  
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  # Nivel de log
+  level: "INFO"
+  
+  # Log file path (empty for stdout only)
+  # Ruta del archivo de log (vacío para solo stdout)
+  log_file: "examgenerator.log"
+  
+  # Log format
+  # Formato de log
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Date format in logs
+  # Formato de fecha en logs
+  date_format: "%Y-%m-%d %H:%M:%S"
+
+# Validation settings
+# Configuración de validación
+validation:
+  # Minimum number of questions per exam
+  # Número mínimo de preguntas por examen
+  min_questions_per_exam: 1
+  
+  # Maximum number of questions per exam
+  # Número máximo de preguntas por examen
+  max_questions_per_exam: 100
+  
+  # Minimum number of options per question
+  # Número mínimo de opciones por pregunta
+  min_options: 2
+  
+  # Maximum number of options per question
+  # Número máximo de opciones por pregunta
+  max_options: 8
+  
+  # Require question numbers in input file
+  # Requerir números de pregunta en archivo de entrada
+  require_question_numbers: false
+
+# Performance settings
+# Configuración de rendimiento
+performance:
+  # Enable parallel processing for multi-exam generation
+  # Activar procesamiento paralelo para generación de múltiples exámenes
+  parallel_processing: false
+  
+  # Maximum number of worker processes
+  # Número máximo de procesos trabajadores
+  max_workers: 4
+  
+  # Cache enabled
+  # Caché activado
+  cache_enabled: false
+  
+  # Cache directory
+  # Directorio de caché
+  cache_dir: ".cache"
+
+# Web interface settings (run_web.py)
+# Configuración de interfaz web
+web:
+  # Enable web interface
+  # Activar interfaz web
+  enabled: true
+  
+  # Host to bind to
+  # Host al que enlazar
+  host: "127.0.0.1"
+  
+  # Port to listen on
+  # Puerto en el que escuchar
+  port: 5000
+  
+  # Debug mode
+  # Modo depuración
+  debug: false
+  
+  # Secret key for sessions (change in production!)
+  # Clave secreta para sesiones (¡cambiar en producción!)
+  secret_key: "change-this-secret-key-in-production"
+
+# Export format specific settings
+# Configuración específica por formato de exportación
+export:
+  excel:
+    # Include exam info at bottom
+    # Incluir información del examen al final
+    include_info: true
+    
+    # Freeze header row
+    # Congelar fila de encabezado
+    freeze_header: true
+  
+  html:
+    # Include interactive features
+    # Incluir características interactivas
+    interactive: true
+    
+    # Theme: light, dark
+    # Tema
+    theme: "light"
+  
+  csv:
+    # Delimiter character
+    # Carácter delimitador
+    delimiter: ","
+    
+    # Quote character
+    # Carácter de comillas
+    quotechar: '"'

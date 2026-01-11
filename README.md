@@ -1,102 +1,174 @@
 # 🎓 ExamGenerator: Generador Avanzado de Exámenes Aleatorios
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org)
+[![Version](https://img.shields.io/badge/Version-12.20260111-orange.svg)](https://github.com/TiiZss/ExamGenerator/releases)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org)
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-9.20251125-orange.svg)](https://github.com/TiiZss/ExamGenerator)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![Flask](https://img.shields.io/badge/Flask-3.0%2B-black.svg?logo=flask)](https://flask.palletsprojects.com)
+[![AI Powered](https://img.shields.io/badge/AI-Gemini%20%7C%20Ollama-blueviolet)](https://github.com/TiiZss/ExamGenerator)
 
-Un sistema completo y profesional en Python para generar exámenes aleatorios con múltiples formatos de salida, plantillas personalizables y generación de preguntas asistida por IA.
+[![GitHub stars](https://img.shields.io/github/stars/TiiZss/ExamGenerator?style=social)](https://github.com/TiiZss/ExamGenerator/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/TiiZss/ExamGenerator)](https://github.com/TiiZss/ExamGenerator/issues)
+[![Changelog](https://img.shields.io/badge/📝-Changelog-blue)](docs/CHANGELOG.md)
+
+[![Buy Me A Coffee](https://img.shields.io/badge/☕-Buy%20me%20a%20coffee-orange?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/tiizss)
+
+---
+
+Un sistema completo y profesional en Python para generar exámenes aleatorios con múltiples formatos de salida, plantillas personalizables, generación de preguntas asistida por IA (Google Gemini & Ollama), y interfaz web moderna con Docker.
 
 ## 🌟 **Características Principales**
 
+### 🌐 **Interfaz Web (NUEVO v11)**
+- **🎨 Interfaz Moderna**: Dashboard web completo con diseño responsive
+- **📝 Generación Web**: Crear exámenes y preguntas sin usar la terminal
+- **⚡ Caché en Tiempo Real**: Estadísticas del caché actualizadas
+- **📤 Descarga Directa**: Descarga automática de archivos ZIP
+- **🎯 Fácil de Usar**: Sin conocimientos técnicos requeridos
+
 ### 📋 **Generador Principal (eg.py)**
 - **🎲 Aleatorización Inteligente**: Mezclado de preguntas y opciones con semillas consistentes
-- **📄 Múltiples Formatos**: Exportación en TXT, DOCX, o ambos simultáneamente
+- **📄 Múltiples Formatos**: Exportación en TXT, DOCX, PDF, o combinados
 - **🎨 Sistema de Plantillas**: Soporte completo para plantillas DOCX con 15+ placeholders
 - **📁 Organización Automática**: Creación de carpetas organizadas por tema de examen
 - **📊 Respuestas Múltiples**: Exportación en Excel, CSV, HTML, y TXT
 - **⏱️ Cálculo de Tiempo**: Estimación automática de duración del examen
-- **🔧 Configuración Flexible**: Múltiples opciones de personalización
+- **📈 Estadísticas**: Análisis de distribución de respuestas y balance
+- **✅ Validaciones**: Sistema robusto de validación de datos
+- **📝 Logging**: Sistema de logging profesional con colores
 
 ### 🤖 **Generador con IA (qg.py)**
-- **🧠 Google Gemini Integration**: Generación automática de preguntas usando IA
+- **🧠 IA Dual**: Soporte para Google Gemini (cloud) y Ollama (local)
 - **📑 Múltiples Formatos**: Procesamiento de PDF, DOCX, y PPTX
 - **🔍 Extracción Inteligente**: Análisis contextual de contenido
+- **⚡ Caché Inteligente**: Evita regenerar preguntas idénticas (TTL 7 días)
+- **🚀 Auto-inicio Ollama**: Detección y arranque automático de Ollama
 - **🔐 Seguridad**: Gestión segura de API keys
+
+### 🏗️ **Arquitectura Modular (NUEVO v11)**
+```
+examgenerator/
+├── core/          # Lógica central
+├── exporters/     # Exportadores de formatos
+├── ai/            # Clientes de IA
+├── utils/         # Utilidades (logging, cache, validators)
+└── web/           # Aplicación web Flask
+```
 
 ## 🚀 **Instalación y Configuración**
 
 ### **Requisitos del Sistema**
-- Python 3.8 o superior
-- PowerShell (Windows) o Terminal (Linux/macOS)
+- Python 3.11 o superior
+- Docker & Docker Compose (para instalación containerizada)
+- UV Package Manager (se instala automáticamente con el script)
+- (Opcional) Ollama para IA local sin conexión
 
-### **1. Instalación Automática**
+### **🐳 Instalación Rápida con Docker (Recomendada)**
 
-#### **🪟 Windows**
-```powershell
-# Método 1: Script directo
-powershell -ExecutionPolicy Bypass -File install.ps1
-
-# Método 2: Si hay problemas de permisos
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-.\install.ps1
-```
-
-#### **🐧 Linux / macOS**
-```bash
-# Método 1: Script completo (recomendado)
-chmod +x install.sh
-./install.sh
-
-# Método 2: Script rápido
-chmod +x quick_install.sh
-./quick_install.sh
-
-# Método 3: Con Make
-make setup-linux
-
-# Método 4: Script universal
-chmod +x setup.sh
-./setup.sh
-```
-
-### **2. Instalación Manual**
+La forma más rápida de ejecutar ExamGenerator con todos los servicios (Web + Ollama IA):
 
 ```bash
 # Clonar repositorio
 git clone https://github.com/TiiZss/ExamGenerator.git
 cd ExamGenerator
 
-# Crear entorno virtual
-python -m venv .venv
+# Iniciar stack completo (Web + Ollama)
+docker-compose up -d
 
-# Activar entorno virtual
-# Windows:
-.\.venv\Scripts\Activate.ps1
-# Linux/macOS:
-source .venv/bin/activate
-
-# Instalar dependencias
-pip install --upgrade pip
-pip install -r requirements.txt
+# Acceder a la interfaz web
+# http://localhost:5000
 ```
 
-### **3. Configuración para IA (Opcional)**
+**Contenedores incluidos:**
+- **ExGen-Web**: Interfaz web Flask (puerto 5000)
+- **ExGen-App**: CLI para procesamiento en background
+- **ExGen-Ollama**: Motor de IA local Ollama (puerto 11434)
 
+### **1. Instalación Automática con UV**
+
+UV es un gestor de paquetes **10-100x más rápido que pip**. Los scripts de instalación lo configuran automáticamente.
+
+#### **🪟 Windows**
+```powershell
+# Script automático (instala UV si no existe)
+.\scripts\install.ps1
+```
+
+#### **🐧 Linux / macOS**
+```bash
+# Script automático (instala UV si no existe)
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
+
+### **2. Docker Quick Start (Alternativa)**
+
+```bash
+# Windows PowerShell
+.\scripts\docker-quickstart.ps1
+
+# Linux/macOS
+chmod +x scripts/docker-quickstart.sh
+./scripts/docker-quickstart.sh
+```
+
+### **3. Configuración de API Keys**
+
+#### **Google Gemini (Cloud AI)**
+
+**Opción 1: Interfaz Web (Recomendada)**
+1. Accede a http://localhost:5000/settings
+2. Introduce tu API key de Google Gemini
+3. Guarda la configuración
+
+**Opción 2: Archivo .env**
+```bash
+# Crear archivo .env en la raíz del proyecto
+echo "GOOGLE_API_KEY=tu-api-key-aqui" > .env
+```
+
+**Opción 3: Variable de entorno**
 ```bash
 # Windows PowerShell
 $env:GOOGLE_API_KEY = "tu-api-key-aqui"
 
 # Linux/macOS
 export GOOGLE_API_KEY="tu-api-key-aqui"
+```
 
-# Permanente en Windows
-setx GOOGLE_API_KEY "tu-api-key-aqui"
+#### **Ollama (IA Local - Sin límites)**
 
-# Permanente en Linux/macOS (añadir a ~/.bashrc o ~/.zshrc)
-echo 'export GOOGLE_API_KEY="tu-api-key-aqui"' >> ~/.bashrc
+Ollama viene preconfigurado en el stack Docker. Si usas instalación manual:
+
+```bash
+# Instalar Ollama desde https://ollama.ai
+
+# Descargar modelo (ejemplo: phi3:mini es rápido y eficiente)
+ollama pull phi3:mini
+
+# O modelos más potentes
+ollama pull llama2
+ollama pull mistral
 ```
 
 ## 📖 **Uso Detallado**
+
+### 🌐 **Interfaz Web (Recomendado)**
+
+```bash
+# Iniciar servidor web con UV
+uv run python run_web.py
+
+# Abrir navegador en: http://localhost:5000
+```
+
+**Funcionalidades disponibles:**
+- 📋 Generar exámenes desde archivo de preguntas
+- 🤖 Generar preguntas con IA desde documentos
+- 📊 Ver estadísticas del caché
+- 🗑️ Limpiar caché antiguo
+
+````
 
 ### **Generador Principal (eg.py)**
 
