@@ -74,7 +74,7 @@ def generate_exams():
             return redirect(url_for('generate_exams'))
         
         file = request.files['questions_file']
-        if file.filename == '':
+        if not file or not file.filename or file.filename == '':
             flash('No se seleccionó ningún archivo', 'error')
             return redirect(url_for('generate_exams'))
         
@@ -230,7 +230,7 @@ def generate_questions():
             return redirect(url_for('generate_questions'))
         
         file = request.files['document']
-        if file.filename == '':
+        if not file or not file.filename or file.filename == '':
             flash('No se seleccionó ningún archivo', 'error')
             return redirect(url_for('generate_questions'))
         

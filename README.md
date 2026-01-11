@@ -19,10 +19,12 @@ Un sistema completo y profesional en Python para generar exámenes aleatorios co
 
 ## 🌟 **Características Principales**
 
-### 🌐 **Interfaz Web (NUEVO v11)**
-- **🎨 Interfaz Moderna**: Dashboard web completo con diseño responsive
+### 🌐 **Interfaz Web v12**
+- **🎨 Interfaz Moderna**: Dashboard web completo con diseño responsive y logo TiiZss
 - **📝 Generación Web**: Crear exámenes y preguntas sin usar la terminal
-- **⚡ Caché en Tiempo Real**: Estadísticas del caché actualizadas
+- **⚙️ Configuración API Keys**: Página web para gestionar Google Gemini API key
+- **🤖 Dual AI Engine**: Soporte para Google Gemini 2.5 y Ollama local
+- **⚡ Caché Inteligente**: Sistema de caché con TTL para evitar regeneración
 - **📤 Descarga Directa**: Descarga automática de archivos ZIP
 - **🎯 Fácil de Usar**: Sin conocimientos técnicos requeridos
 
@@ -38,14 +40,22 @@ Un sistema completo y profesional en Python para generar exámenes aleatorios co
 - **📝 Logging**: Sistema de logging profesional con colores
 
 ### 🤖 **Generador con IA (qg.py)**
-- **🧠 IA Dual**: Soporte para Google Gemini (cloud) y Ollama (local)
+- **🧠 IA Dual**: Soporte para Google Gemini 2.5 (cloud) y Ollama (local)
+- **📦 Chunking Automático**: Genera cualquier cantidad de preguntas (divide en chunks de 10-15)
 - **📑 Múltiples Formatos**: Procesamiento de PDF, DOCX, y PPTX
 - **🔍 Extracción Inteligente**: Análisis contextual de contenido
 - **⚡ Caché Inteligente**: Evita regenerar preguntas idénticas (TTL 7 días)
-- **🚀 Auto-inicio Ollama**: Detección y arranque automático de Ollama
-- **🔐 Seguridad**: Gestión segura de API keys
+- **📝 Formato AIKEN**: Genera preguntas con exactamente 4 opciones
+- **🔐 Seguridad**: Gestión segura de API keys via web o .env
 
-### 🏗️ **Arquitectura Modular (NUEVO v11)**
+### 🐳 **Docker Stack v12**
+- **3 Contenedores**: ExGen-Web (Flask), ExGen-App (CLI), ExGen-Ollama (IA Local)
+- **Hot-Reload**: Código montado como volúmenes para desarrollo ágil
+- **Ollama Integrado**: IA local preconfigurada (phi3:mini) sin configuración adicional
+- **Configuración .env**: Variables de entorno centralizadas
+- **Un Solo Comando**: `docker-compose up -d` para todo el stack
+
+### 🏗️ **Arquitectura Modular v12**
 ```
 examgenerator/
 ├── core/          # Lógica central
