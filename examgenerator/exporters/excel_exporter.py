@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import List, Dict, Any, cast
 
 
-def create_answers_excel(all_exam_data: List[Dict[str, Any]], exam_prefix: str, output_dir: str) -> None:
+def create_answers_excel(all_exam_data: List[Dict[str, Any]], exam_prefix: str, output_dir: str, minutes_per_question: float = 1.0) -> None:
     """Create a single Excel file with all exam answers (transposed layout)."""
     try:
         import openpyxl
@@ -100,7 +100,7 @@ def create_answers_excel(all_exam_data: List[Dict[str, Any]], exam_prefix: str, 
         ("Fecha de generación:", datetime.now().strftime("%d/%m/%Y %H:%M")),
         ("Número total de exámenes:", str(len(all_exam_data))),
         ("Preguntas por examen:", str(max_questions)),
-        ("Tiempo estimado:", calculate_exam_time(max_questions))
+        ("Tiempo estimado:", calculate_exam_time(max_questions, minutes_per_question))
     ]
     
     for i, (label, value) in enumerate(details):

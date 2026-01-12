@@ -2,8 +2,10 @@
 Time calculation utilities for exams.
 """
 
+import math
 
-def calculate_exam_time(num_questions: int, minutes_per_question: int = 1) -> str:
+
+def calculate_exam_time(num_questions: int, minutes_per_question: float = 1) -> str:
     """Calculate exam duration and return formatted string.
     
     Args:
@@ -13,7 +15,7 @@ def calculate_exam_time(num_questions: int, minutes_per_question: int = 1) -> st
     Returns:
         Formatted time string in Spanish (e.g., "45 minutos", "1 hora y 30 minutos")
     """
-    total_minutes = num_questions * minutes_per_question
+    total_minutes = math.ceil(num_questions * minutes_per_question)
     
     if total_minutes < 60:
         return f"{total_minutes} minutos"

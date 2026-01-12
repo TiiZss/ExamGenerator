@@ -7,6 +7,38 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+## [12.20260112] - 2026-01-12
+
+### 🚀 Añadido
+- **Barra de Progreso en Generación de Exámenes**: Visualización en tiempo real del progreso
+  - Mensajes de estado dinámicos (preparando archivos → mezclando preguntas → generando exámenes)
+  - Estimación de progreso basada en cantidad de preguntas
+  - Descarga automática del ZIP al completar
+  - Diseño coherente con barra de progreso de IA
+- **Tiempo de Examen Configurable**: Campo para minutos por pregunta
+  - Vista previa en tiempo real del tiempo total estimado
+  - Valor por defecto desde configuración (config.yaml)
+  - Redondeo hacia arriba con Math.ceil
+  - Integrado en cálculo de placeholders {{EXAM_TIME}}
+
+### 🔧 Cambiado
+- **Interfaz de Generación de Exámenes Compacta**: Diseño optimizado
+  - Controles en una sola línea (número de exámenes, preguntas, minutos, tiempo estimado)
+  - Diseño responsive con flexbox (nowrap en pantallas >900px)
+  - Padding y márgenes reducidos en móvil
+  - Botón "Generar Exámenes" centrado
+- **Envío de Formulario con AJAX**: Sin recarga de página
+  - Progreso visual durante generación
+  - Manejo de errores con mensajes claros
+  - Reseteo automático del formulario tras completar
+
+### 🎨 Mejorado
+- Diseño responsive mejorado para móviles (<768px)
+- Consistencia visual entre páginas de generación
+- Reducción de scroll vertical innecesario
+
+---
+
 ## [11.20260111.1] - 2026-01-11
 
 ### 🚀 Añadido

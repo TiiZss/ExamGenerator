@@ -101,7 +101,8 @@ def generate_exams(questions_file, exam_prefix, num_exams, questions_per_exam,
                 num_questions=questions_per_exam,
                 export_format=export_format,
                 template_path=template,
-                answers_format=answers
+                answers_format=answers,
+                minutes_per_question=time_per_question
             )
         
         # Success message

@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import List, Dict
 
 
-def create_answers_txt(all_exam_data: List[Dict], exam_prefix: str, output_dir: str) -> None:
+def create_answers_txt(all_exam_data: List[Dict], exam_prefix: str, output_dir: str, minutes_per_question: float = 1.0) -> None:
     """Create a TXT file with all exam answers (transposed layout)."""
     # Import time calculation function
     from ..core.time_calculator import calculate_exam_time
@@ -43,7 +43,7 @@ def create_answers_txt(all_exam_data: List[Dict], exam_prefix: str, output_dir: 
     txt_content += f"Fecha de generación: {datetime.now().strftime('%d/%m/%Y %H:%M')}\n"
     txt_content += f"Número de exámenes: {len(all_exam_data)}\n"
     txt_content += f"Preguntas por examen: {max_questions}\n"
-    txt_content += f"Tiempo estimado: {calculate_exam_time(max_questions)}\n"
+    txt_content += f"Tiempo estimado: {calculate_exam_time(max_questions, minutes_per_question)}\n"
     
     # Write TXT file
     txt_filename = os.path.join(output_dir, f"respuestas_{exam_prefix}_completas.txt")

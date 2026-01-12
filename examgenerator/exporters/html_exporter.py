@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import List, Dict
 
 
-def create_answers_html(all_exam_data: List[Dict], exam_prefix: str, output_dir: str) -> None:
+def create_answers_html(all_exam_data: List[Dict], exam_prefix: str, output_dir: str, minutes_per_question: float = 1.0) -> None:
     """Create an HTML file with all exam answers (transposed layout)."""
     # Import time calculation function
     from ..core.time_calculator import calculate_exam_time
@@ -141,7 +141,7 @@ def create_answers_html(all_exam_data: List[Dict], exam_prefix: str, output_dir:
             </div>
             <div class="info-item">
                 <span class="info-label">Tiempo estimado:</span>
-                {calculate_exam_time(max_questions)}
+                {calculate_exam_time(max_questions, minutes_per_question)}
             </div>
         </div>
     </div>

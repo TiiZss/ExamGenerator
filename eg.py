@@ -30,7 +30,7 @@ from examgenerator.exporters import (
 )
 
 
-def validate_args(args: List[str]) -> Tuple[str, str, int, int, str, Optional[str], str]:
+def validate_args(args: List[str]) -> Tuple[str, str, int, int, str, Optional[str], str, float]:
     """Validate and parse command line arguments.
     
     Args:
@@ -38,13 +38,13 @@ def validate_args(args: List[str]) -> Tuple[str, str, int, int, str, Optional[st
         
     Returns:
         Tuple of (questions_file, exam_prefix, num_exams, questions_per_exam, 
-                  export_format, template_path, answers_format)
+                  export_format, template_path, answers_format, minutes_per_question)
                   
     Raises:
         ValueError: If arguments are invalid
     """
     if len(args) < 5:
-        print("Uso: python eg.py <archivo_preguntas> <prefijo_examen> <num_examenes> <preguntas_por_examen> [formato] [plantilla] [formato_respuestas]")
+        print("Uso: python eg.py <archivo_preguntas> <prefijo_examen> <num_examenes> <preguntas_por_examen> [formato] [plantilla] [formato_respuestas] [minutos_por_pregunta]")
         print("\nArgumentos:")
         print("  archivo_preguntas      : Archivo .txt con las preguntas")
         print("  prefijo_examen         : Prefijo para los exámenes (ej: Parcial, Final)")
@@ -53,6 +53,7 @@ def validate_args(args: List[str]) -> Tuple[str, str, int, int, str, Optional[st
         print("  [formato]              : Formato de salida (txt, docx, both) - por defecto: txt")
         print("  [plantilla]            : Archivo de plantilla DOCX (opcional)")
         print("  [formato_respuestas]   : Formato del archivo de respuestas (xlsx, csv, txt, html) - por defecto: xlsx")
+        print("  [minutos_por_pregunta] : Minutos asignados por pregunta (puede ser decimal) - por defecto: 1")
         print("\nEjemplos:")
         print("  python eg.py preguntas.txt Parcial 3 10")
         print("  python eg.py preguntas.txt Final 5 20 both")
@@ -93,8 +94,25 @@ def validate_args(args: List[str]) -> Tuple[str, str, int, int, str, Optional[st
     answers_format = args[7].lower() if len(args) > 7 else 'xlsx'
     if answers_format not in ['xlsx', 'csv', 'txt', 'html']:
         raise ValueError("Formato de respuestas debe ser: xlsx, csv, txt o html")
+
+    # Optional minutes per question (positional 8)
+    try:
+        minutes_per_question = float(args[8]) if len(args) > 8 else 1.0
+        if minutes_per_question <= 0:
+            raise ValueError
+    except ValueError:
+        raise ValueError("Los minutos por pregunta deben ser un número positivo (puede ser decimal).")
     
-    return questions_file, exam_prefix, num_exams, questions_per_exam, export_format, template_path, answers_format
+    return (
+        questions_file,
+        exam_prefix,
+        num_exams,
+        questions_per_exam,
+        export_format,
+        template_path,
+        answers_format,
+        minutes_per_question,
+    )
 
 
 def main_generate(
@@ -104,7 +122,8 @@ def main_generate(
     num_questions: int,
     export_format: str = 'txt',
     template_path: Optional[str] = None,
-    answers_format: str = 'xlsx'
+    answers_format: str = 'xlsx',
+    minutes_per_question: float = 1.0
 ) -> str:
     """Main generation function (callable from CLI).
     
@@ -116,6 +135,7 @@ def main_generate(
         export_format: Export format ('txt', 'docx', 'both')
         template_path: Optional DOCX template path
         answers_format: Answers format ('xlsx', 'csv', 'txt', 'html')
+        minutes_per_question: Minutes assigned per question (can be decimal)
         
     Returns:
         Output directory path
@@ -146,8 +166,8 @@ def main_generate(
         num_questions = len(questions_data)
 
     # Calculate and show exam time
-    exam_time = calculate_exam_time(num_questions)
-    print(f"Tiempo estimado por examen: {exam_time}")
+    exam_time = calculate_exam_time(num_questions, minutes_per_question)
+    print(f"Tiempo estimado por examen: {exam_time} (minutos por pregunta: {minutes_per_question})")
 
     # Store all exam data for answer files
     all_exam_data = []
@@ -195,17 +215,24 @@ def main_generate(
                 f.write(answers_content)
         
         if export_format in ['docx', 'both']:
-            create_exam_docx(exam_prefix, i, exam_questions, output_dir, template_path)
+            create_exam_docx(
+                exam_prefix,
+                i,
+                exam_questions,
+                output_dir,
+                template_path,
+                minutes_per_question,
+            )
 
     # Create consolidated answer file in selected format
     if answers_format == 'xlsx':
-        create_answers_excel(all_exam_data, exam_prefix, output_dir)
+        create_answers_excel(all_exam_data, exam_prefix, output_dir, minutes_per_question)
     elif answers_format == 'csv':
         create_answers_csv(all_exam_data, exam_prefix, output_dir)
     elif answers_format == 'html':
-        create_answers_html(all_exam_data, exam_prefix, output_dir)
+        create_answers_html(all_exam_data, exam_prefix, output_dir, minutes_per_question)
     elif answers_format == 'txt':
-        create_answers_txt(all_exam_data, exam_prefix, output_dir)
+        create_answers_txt(all_exam_data, exam_prefix, output_dir, minutes_per_question)
 
     format_msg = {
         'txt': 'TXT',
@@ -224,7 +251,7 @@ def main_generate(
 def main():
     """Main execution function for CLI."""
     try:
-        questions_file, exam_prefix, num_exams, questions_per_exam, export_format, template_path, answers_format = validate_args(sys.argv)
+        questions_file, exam_prefix, num_exams, questions_per_exam, export_format, template_path, answers_format, minutes_per_question = validate_args(sys.argv)
         
         main_generate(
             questions_file=questions_file,
@@ -233,7 +260,8 @@ def main():
             num_questions=questions_per_exam,
             export_format=export_format,
             template_path=template_path,
-            answers_format=answers_format
+            answers_format=answers_format,
+            minutes_per_question=minutes_per_question
         )
 
     except (FileNotFoundError, ValueError, ImportError) as e:

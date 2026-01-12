@@ -1,6 +1,37 @@
-# 🚀 ExamGenerator v12.20260111 - Major Release
+# 🚀 ExamGenerator v12.20260112 - UI Enhancement Release
 
 ## 🎉 Highlights
+
+### ✨ **Interfaz de Usuario Mejorada**
+
+#### Diseño Compacto y Responsivo
+- **Formulario en Una Línea**: Número de exámenes, preguntas por examen, minutos por pregunta y tiempo estimado ahora en una sola fila
+- **Sin Scroll Innecesario**: Optimizado para pantallas de escritorio sin necesidad de desplazamiento vertical
+- **Responsive Design**: Se adapta automáticamente a móviles (<768px) y pantallas anchas (>900px)
+- **Botón Centrado**: Botón "Generar Exámenes" visualmente centrado con mejor espaciado
+
+#### Barra de Progreso en Generación de Exámenes
+- **Visualización en Tiempo Real**: Barra de progreso animada durante la generación
+- **Mensajes de Estado Dinámicos**:
+  - 📂 Preparando archivos...
+  - 🎲 Mezclando preguntas...
+  - 📝 Generando exámenes (X de N)...
+  - 📊 Generando respuestas...
+  - ✍️ Finalizando...
+- **Descarga Automática**: ZIP descargado automáticamente al completar
+- **Diseño Coherente**: Colores y estilos consistentes con generación de preguntas IA
+
+#### Tiempo de Examen Personalizable
+- **Campo Configurable**: Minutos por pregunta con incrementos de 0.1
+- **Vista Previa en Tiempo Real**: Tiempo total estimado se actualiza automáticamente
+- **Valor por Defecto**: Tomado de `config.yaml` (default_time_per_question)
+- **Formateo Inteligente**: "X minutos" o "X hora(s) y Y minutos"
+
+#### Mejoras en Formulario AJAX
+- **Sin Recarga de Página**: Envío asíncrono del formulario
+- **Manejo de Errores**: Mensajes claros con opciones de reintentar
+- **Reseteo Automático**: Formulario se limpia tras generación exitosa
+- **Feedback Visual**: Botón deshabilitado durante procesamiento
 
 ### 🐳 **Stack Docker Completo**
 ExamGenerator ahora viene con una arquitectura Docker completamente integrada:

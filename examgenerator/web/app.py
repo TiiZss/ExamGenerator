@@ -22,6 +22,7 @@ from examgenerator.utils.validators import (
 from examgenerator.utils.cache import QuestionCache
 from examgenerator.utils.statistics import generate_exam_statistics, print_statistics
 from examgenerator.utils.settings import get_settings, save_settings, get_gemini_api_key, set_gemini_api_key
+from examgenerator.config import config as app_config
 
 # Import modular functions
 from examgenerator.core.question_loader import load_questions_from_file, validate_questions
@@ -66,7 +67,10 @@ def index():
 def generate_exams():
     """Generar exámenes desde archivo de preguntas."""
     if request.method == 'GET':
-        return render_template('generate_exams.html')
+        return render_template(
+            'generate_exams.html',
+            default_time_per_question=app_config.get('exam.default_time_per_question', 1)
+        )
     
     try:
         # Obtener archivo de preguntas
@@ -97,6 +101,12 @@ def generate_exams():
         num_exams = int(request.form.get('num_exams', 1))
         questions_per_exam = int(request.form.get('questions_per_exam', 10))
         export_format = request.form.get('export_format', 'txt')
+        minutes_per_question = float(request.form.get(
+            'minutes_per_question',
+            app_config.get('exam.default_time_per_question', 1)
+        ))
+        if minutes_per_question <= 0:
+            minutes_per_question = 1
         
         # Manejar plantilla DOCX si se subió
         template_path = None
@@ -166,11 +176,12 @@ def generate_exams():
                     i, 
                     exam_questions, 
                     str(output_dir),
-                    str(template_path) if template_path else None
+                    str(template_path) if template_path else None,
+                    minutes_per_question
                 )
         
         # Generar archivo de respuestas usando exporter
-        create_answers_excel(all_exam_data, exam_prefix, str(output_dir))
+        create_answers_excel(all_exam_data, exam_prefix, str(output_dir), minutes_per_question)
         
         # Generar estadísticas
         stats = generate_exam_statistics(all_exam_data)

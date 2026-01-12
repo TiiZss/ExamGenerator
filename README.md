@@ -25,6 +25,9 @@ Un sistema completo y profesional en Python para generar exámenes aleatorios co
 - **🤖 Dual AI Engine**: Soporte para Google Gemini 2.5 y Ollama local
 - **⚡ Caché Inteligente**: Sistema de caché con TTL para evitar regeneración
 - **📤 Descarga Directa**: Descarga automática de archivos ZIP
+- **📊 Barra de Progreso**: Visualización en tiempo real de generación de exámenes y preguntas
+- **🎯 Interfaz Compacta**: Diseño optimizado sin scroll innecesario
+- **⏱️ Tiempo Personalizable**: Configura minutos por pregunta con vista previa de tiempo total
 - **🎯 Fácil de Usar**: Sin conocimientos técnicos requeridos
 
 ### 📋 **Generador Principal (eg.py)**

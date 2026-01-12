@@ -4,6 +4,7 @@ DOCX exporter for exams.
 
 import os
 import random
+import math
 from datetime import datetime
 from typing import List, Dict, Optional, Any, TYPE_CHECKING
 
@@ -80,7 +81,7 @@ def create_docx_document(title: str, template_path: Optional[str] = None) -> Any
     return doc
 
 
-def replace_placeholders(doc: Any, exam_prefix: str, exam_number: int, num_questions: int):
+def replace_placeholders(doc: Any, exam_prefix: str, exam_number: int, num_questions: int, minutes_per_question: float = 1.0):
     """Replace placeholders in the template document.
     
     Args:
@@ -101,8 +102,8 @@ def replace_placeholders(doc: Any, exam_prefix: str, exam_number: int, num_quest
     }
     
     # Calculate exam time
-    exam_time = calculate_exam_time(num_questions)
-    exam_time_minutes = int(num_questions * 1.0)  # Default: 1 minute per question
+    exam_time = calculate_exam_time(num_questions, minutes_per_question)
+    exam_time_minutes = int(math.ceil(num_questions * minutes_per_question))
     
     replacements = {
         '{{EXAM_NAME}}': f"{exam_prefix}",
@@ -171,7 +172,8 @@ def create_exam_docx(
     exam_number: int,
     selected_questions: List[Dict],
     output_dir: str,
-    template_path: Optional[str] = None
+    template_path: Optional[str] = None,
+    minutes_per_question: float = 1.0
 ) -> None:
     """Save exam as DOCX file.
     
@@ -197,7 +199,7 @@ def create_exam_docx(
     exam_doc = create_docx_document(f"EXAMEN {exam_prefix} {exam_number}", template_path)
     
     # Replace placeholders in template
-    replace_placeholders(exam_doc, exam_prefix, exam_number, num_questions)
+    replace_placeholders(exam_doc, exam_prefix, exam_number, num_questions, minutes_per_question)
     
     # Find insertion point for content
     insertion_point = find_content_insertion_point(exam_doc)
