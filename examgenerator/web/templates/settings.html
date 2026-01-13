@@ -9,31 +9,27 @@
 </div>
 
 <form method="POST" class="card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <h3>🔑 Google Gemini API Key</h3>
     <p style="margin-bottom: 20px;">
         Configura tu clave de API de Google Gemini para generar preguntas con IA en la nube.<br>
-        <small>Obtén tu API key en: <a href="https://aistudio.google.com/apikey" target="_blank">https://aistudio.google.com/apikey</a></small>
+        <small>Obtén tu API key en: <a href="https://aistudio.google.com/apikey"
+                target="_blank">https://aistudio.google.com/apikey</a></small>
     </p>
-    
+
     <div class="form-group">
         <label for="gemini_api_key">API Key de Gemini:</label>
-        <input 
-            type="text" 
-            id="gemini_api_key" 
-            name="gemini_api_key" 
-            value="{{ current_key }}"
-            placeholder="AIzaSyC-tu-api-key-aqui"
-            style="font-family: monospace;"
-        >
+        <input type="text" id="gemini_api_key" name="gemini_api_key" value="{{ current_key }}"
+            placeholder="AIzaSyC-tu-api-key-aqui" style="font-family: monospace;">
         <small style="color: #666;">
             {% if current_key %}
-                ✅ API Key configurada: {{ current_key[:20] }}...
+            ✅ API Key configurada: {{ current_key[:20] }}...
             {% else %}
-                ⚠️ No hay API key configurada. Gemini no funcionará.
+            ⚠️ No hay API key configurada. Gemini no funcionará.
             {% endif %}
         </small>
     </div>
-    
+
     <div style="display: flex; gap: 10px;">
         <button type="submit">💾 Guardar Configuración</button>
         <button type="button" onclick="testApiKey()" style="background: #28a745;">🧪 Probar API Key</button>
@@ -42,41 +38,43 @@
 
 <div class="card">
     <h3>ℹ️ Información</h3>
-    <ul>
+    <ul style="padding-left: 40px;">
         <li><strong>Ollama (Local):</strong> No requiere API key. Funciona localmente.</li>
         <li><strong>Google Gemini:</strong> Requiere API key gratuita. Límites: 15 req/min (gratuito).</li>
-        <li><strong>Almacenamiento:</strong> La API key se guarda en <code>/app/config/settings.json</code> (persistente).</li>
+        <li><strong>Almacenamiento:</strong> La API key se guarda en <code>/app/config/settings.json</code>
+            (persistente).</li>
     </ul>
 </div>
 
 <script>
-async function testApiKey() {
-    const apiKey = document.getElementById('gemini_api_key').value;
-    
-    if (!apiKey) {
-        alert('⚠️ Por favor, introduce una API key primero.');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/settings/test-api-key', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ api_key: apiKey })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            alert('✅ API Key válida!\n\nModelos disponibles:\n' + result.models.slice(0, 5).join('\n') + '\n...');
-        } else {
-            alert('❌ Error: ' + result.error);
+    async function testApiKey() {
+        const apiKey = document.getElementById('gemini_api_key').value;
+
+        if (!apiKey) {
+            alert('⚠️ Por favor, introduce una API key primero.');
+            return;
         }
-    } catch (error) {
-        alert('❌ Error de conexión: ' + error.message);
+
+        try {
+            const response = await fetch('/settings/test-api-key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ api_key: apiKey })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('✅ API Key válida!\n\nModelos disponibles:\n' + result.models.slice(0, 5).join('\n') + '\n...');
+            } else {
+                alert('❌ Error: ' + result.error);
+            }
+        } catch (error) {
+            alert('❌ Error de conexión: ' + error.message);
+        }
     }
-}
 </script>
 {% endblock %}

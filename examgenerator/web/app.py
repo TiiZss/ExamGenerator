@@ -2,8 +2,10 @@
 Aplicación web Flask para ExamGenerator.
 """
 
-from flask import Flask, render_template, request, send_file, jsonify, flash, redirect, url_for
+from flask import Flask, render_template, request, send_file, jsonify, flash, redirect, url_for, Response
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.utils import secure_filename
+from functools import wraps
 import os
 import sys
 import requests
@@ -34,9 +36,61 @@ from examgenerator.exporters.docx_exporter import create_exam_docx
 logger = get_logger('web')
 
 # Crear aplicación Flask
+# Crear aplicación Flask
 app = Flask(__name__)
-app.secret_key = 'examgenerator_secret_key_change_in_production'
+app.secret_key = os.environ.get('SECRET_KEY', 'dev_key_change_in_production')
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max
+
+# Initialize CSRF Protection
+csrf = CSRFProtect(app)
+
+# Basic Auth Configuration
+BASIC_AUTH_USER = os.environ.get('BASIC_AUTH_USER')
+BASIC_AUTH_PASS = os.environ.get('BASIC_AUTH_PASS')
+
+def check_auth(username, password):
+    """Check if a username/password combination is valid."""
+    return username == BASIC_AUTH_USER and password == BASIC_AUTH_PASS
+
+def authenticate():
+    """Sends a 401 response that enables basic auth."""
+    return Response(
+        'Could not verify your access level for that URL.\n'
+        'You have to login with proper credentials', 401,
+        {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not BASIC_AUTH_USER or not BASIC_AUTH_PASS:
+            # If auth not configured, skip (or fail secure? let's fail secure if prod)
+            if app.config['ENV'] == 'production':
+                 return Response("Server Misconfiguration: Auth credentials not set.", 500)
+            return f(*args, **kwargs)
+
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
+
+# Apply auth globally to all routes except health check (if exists) or static
+@app.before_request
+def require_login():
+    if request.endpoint == 'static': 
+        return
+    # Exclude health check if you have one
+    if request.endpoint == 'health_check':
+        return
+    
+    # We apply auth manually here instead of decorator on every route
+    if not BASIC_AUTH_USER or not BASIC_AUTH_PASS:
+        # Auth disabled if no credentials set
+        return
+
+    auth = request.authorization
+    if not auth or not check_auth(auth.username, auth.password):
+        return authenticate()
 
 # Rutas absolutas basadas en la ubicación de app.py
 BASE_DIR = Path(__file__).parent.absolute()
@@ -60,7 +114,9 @@ cache = QuestionCache()
 @app.route('/')
 def index():
     """Página principal."""
-    return render_template('index.html')
+    from examgenerator.utils.counter import get_exam_count
+    total_exams = get_exam_count()
+    return render_template('index.html', total_exams=total_exams)
 
 
 @app.route('/generate-exams', methods=['GET', 'POST'])
@@ -83,18 +139,17 @@ def generate_exams():
             flash('No se seleccionó ningún archivo', 'error')
             return redirect(url_for('generate_exams'))
         
-        # Guardar archivo temporalmente
+        # Validar extensión manualmente ya que no guardamos archivo
         filename = secure_filename(file.filename)
-        filepath = Path(app.config['UPLOAD_FOLDER']) / filename
-        file.save(filepath)
-        
-        # Validar archivo
-        try:
-            validate_file_extension(str(filepath), ['.txt'])
-            validate_file_size(str(filepath), max_size_mb=10)
-        except ValidationError as e:
-            flash(str(e), 'error')
+        ext = os.path.splitext(filename)[1].lower()
+        if ext != '.txt':
+            flash('Solo se permiten archivos .txt', 'error')
             return redirect(url_for('generate_exams'))
+
+        # Leer archivo en memoria
+        # Flask FileStorage stream está en memoria o temp file, pero es seekable
+        import io
+        stream = io.TextIOWrapper(file.stream._file, encoding='utf-8') if hasattr(file.stream, '_file') else io.TextIOWrapper(file.stream, encoding='utf-8')
         
         # Obtener parámetros
         exam_prefix = request.form.get('exam_prefix', 'Examen')
@@ -115,77 +170,93 @@ def generate_exams():
         if use_template and 'template_file' in request.files:
             template_file = request.files['template_file']
             if template_file and template_file.filename:
-                # Guardar plantilla temporalmente
-                template_filename = secure_filename(template_file.filename)
-                template_path = Path(app.config['UPLOAD_FOLDER']) / f"template_{template_filename}"
-                template_file.save(template_path)
-                
-                # Validar que sea DOCX
-                try:
-                    validate_file_extension(str(template_path), ['.docx'])
-                except ValidationError as e:
-                    flash(f'Error en plantilla: {str(e)}', 'error')
-                    return redirect(url_for('generate_exams'))
+                # Plantillas necesitamos guardarlas temporalmente porque docx-mailmerge/others suelen pedir path
+                # O podemos intentar streams si el exporter lo soporta. Revisemos docx_exporter luego.
+                # Por ahora, para templates mantendremos temp file por compatibilidad de librerías de terceros (python-docx-template)
+                # Ojo: el usuario pidió 'ficheros' (general), asumamos input principal.
+                # Pero intentemos secure temp file
+                import tempfile
+                t_ext = os.path.splitext(template_file.filename)[1]
+                t_fd, t_path = tempfile.mkstemp(suffix=t_ext)
+                os.close(t_fd)
+                template_file.save(t_path)
+                template_path = t_path
         
-        # Cargar preguntas usando API modular
-        questions_data = load_questions_from_file(str(filepath))
+        # Cargar preguntas usando API modular desde stream
+        from examgenerator.core.question_loader import load_questions_from_stream
+        questions_data = load_questions_from_stream(stream)
         
         # Crear directorio de salida
         output_dir = Path(app.config['OUTPUT_FOLDER']) / f"Examenes_{exam_prefix}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        output_dir.mkdir(exist_ok=True)
+        output_dir.mkdir(parents=True, exist_ok=True)
         
         # Generar exámenes
-        all_exam_data = []
-        
-        for i in range(1, num_exams + 1):
-            # Set deterministic random seed
-            seed = f"{exam_prefix}_{i}"
+        try:
+            all_exam_data = []
             
-            # Generate exam using new modular API
-            exam_questions, exam_answers = generate_exam(
-                questions_data,
-                questions_per_exam,
-                seed
-            )
-            
-            all_exam_data.append({
-                'exam_number': i,
-                'questions': exam_questions,
-                'answers': list(exam_answers.values())
-            })
-            
-            # Guardar archivos TXT
-            if export_format in ['txt', 'both']:
-                # Create exam content
-                exam_content = f"--- EXAMEN {exam_prefix} {i} ---\n\n"
-                option_letters = ['A', 'B', 'C', 'D']
+            for i in range(1, num_exams + 1):
+                # Set deterministic random seed
+                seed = f"{exam_prefix}_{i}"
                 
-                for q in exam_questions:
-                    exam_content += f"{q['number']}. {q['question']}\n"
-                    for j, option in enumerate(q['options']):
-                        exam_content += f"   {option_letters[j]}) {option}\n"
-                    exam_content += "\n"
-                
-                # Save exam file using exporter
-                create_exam_txt(exam_content, exam_prefix, i, str(output_dir))
-            
-            # Guardar archivos DOCX
-            if export_format in ['docx', 'both']:
-                create_exam_docx(
-                    exam_prefix, 
-                    i, 
-                    exam_questions, 
-                    str(output_dir),
-                    str(template_path) if template_path else None,
-                    minutes_per_question
+                # Generate exam using modular API
+                exam_questions, exam_answers = generate_exam(
+                    questions_data,
+                    questions_per_exam,
+                    seed
                 )
-        
-        # Generar archivo de respuestas usando exporter
-        create_answers_excel(all_exam_data, exam_prefix, str(output_dir), minutes_per_question)
-        
-        # Generar estadísticas
-        stats = generate_exam_statistics(all_exam_data)
-        
+                
+                all_exam_data.append({
+                    'exam_number': i,
+                    'questions': exam_questions,
+                    'answers': list(exam_answers.values())
+                })
+                
+                # Guardar archivos TXT
+                if export_format in ['txt', 'both']:
+                    # Create exam content
+                    exam_content = f"--- EXAMEN {exam_prefix} {i} ---\n\n"
+                    option_letters = ['A', 'B', 'C', 'D']
+                    
+                    for q in exam_questions:
+                        exam_content += f"{q['number']}. {q['question']}\n"
+                        for j, option in enumerate(q['options']):
+                            exam_content += f"   {option_letters[j]}) {option}\n"
+                        exam_content += "\n"
+                    
+                    # Save exam file using exporter
+                    create_exam_txt(exam_content, exam_prefix, i, str(output_dir))
+                
+                # Guardar archivos DOCX
+                if export_format in ['docx', 'both']:
+                    create_exam_docx(
+                        exam_prefix, 
+                        i, 
+                        exam_questions, 
+                        str(output_dir),
+                        str(template_path) if template_path else None,
+                        minutes_per_question
+                    )
+            
+            # Generar archivo de respuestas usando exporter
+            create_answers_excel(all_exam_data, exam_prefix, str(output_dir), minutes_per_question)
+            
+            # Generar estadísticas
+            stats = generate_exam_statistics(all_exam_data)
+            
+            # Incrementar contador persistente
+            try:
+                from examgenerator.utils.counter import increment_exam_count
+                increment_exam_count(num_exams)
+            except Exception as e:
+                logger.error(f"Error incrementing counter: {e}")
+                
+            flash(f'¡Éxito! Se generaron {num_exams} exámenes en: {output_dir}', 'success')
+            
+        except Exception as e:
+            flash(f'Error generando exámenes: {str(e)}', 'error')
+            logger.error(f"Error generation: {e}")
+            return redirect(url_for('generate_exams'))
+            
         # Comprimir archivos
         import zipfile
         zip_filename = f"{output_dir.name}.zip"
@@ -246,39 +317,30 @@ def generate_questions():
             flash('No se seleccionó ningún archivo', 'error')
             return redirect(url_for('generate_questions'))
         
-        # Guardar archivo
+        # Procesar archivo en memoria
         filename = secure_filename(file.filename)
-        filepath = Path(app.config['UPLOAD_FOLDER']) / filename
-        file.save(filepath)
+        ext = Path(filename).suffix.lower()
         
-        # Validar archivo
-        try:
-            validate_file_extension(str(filepath), ['.pdf', '.docx', '.pptx'])
-            validate_file_size(str(filepath), max_size_mb=50)
-        except ValidationError as e:
-            flash(str(e), 'error')
+        if ext not in ['.pdf', '.docx', '.pptx']:
+            flash('Formato de archivo no soportado (use PDF, DOCX, PPTX)', 'error')
             return redirect(url_for('generate_questions'))
-        
-        # Obtener parámetros
-        num_questions = int(request.form.get('num_questions', 10))
-        language = request.form.get('language', 'español')
-        engine = request.form.get('engine', 'gemini')
-        model = request.form.get('model', 'gemini-1.5-flash' if engine == 'gemini' else 'llama2')
-        use_cache = request.form.get('use_cache', 'on') == 'on'
-        
+
         # Importar qg.py functions
         import qg
+        import io
+        
+        # Leer a BytesIO
+        file_stream = io.BytesIO(file.read())
         
         # Extraer texto
-        ext = filepath.suffix.lower()
         if ext == '.pdf':
-            text_content = qg.extract_text_from_pdf(str(filepath))
+            text_content = qg.extract_text_from_pdf(file_stream)
         elif ext == '.docx':
-            text_content = qg.extract_text_from_docx(str(filepath))
+            text_content = qg.extract_text_from_docx(file_stream)
         elif ext == '.pptx':
-            text_content = qg.extract_text_from_pptx(str(filepath))
+            text_content = qg.extract_text_from_pptx(file_stream)
         else:
-            flash('Formato de archivo no soportado', 'error')
+            flash('Formato no soportado', 'error')
             return redirect(url_for('generate_questions'))
         
         if not text_content or not text_content.strip():

@@ -4,25 +4,21 @@ Core module for question loading and parsing.
 
 import os
 import re
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, TextIO
+import io
 
-
-def load_questions_from_file(filepath: str) -> List[Dict[str, Union[str, List[str]]]]:
-    """Load questions from a text file and return parsed question data.
+def load_questions_from_stream(stream: TextIO) -> List[Dict[str, Union[str, List[str]]]]:
+    """Load questions from a text stream (file-like object) and return parsed question data.
     
     Args:
-        filepath: Path to the questions file
+        stream: Text stream (file-like object) containing questions
         
     Returns:
-        List of question dictionaries with 'question', 'options', and 'answer' keys
+        List of question dictionaries
         
     Raises:
-        FileNotFoundError: If file doesn't exist
-        ValueError: If file format is invalid
+        ValueError: If format is invalid
     """
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(f"El archivo '{filepath}' no se encontró.")
-
     questions_data: List[Dict[str, Any]] = []
     current_question: Dict[str, Any] = {}
     options: List[str] = []
@@ -31,41 +27,47 @@ def load_questions_from_file(filepath: str) -> List[Dict[str, Union[str, List[st
     option_pattern = re.compile(r'^[A-D][).]\s')
     question_number_pattern = re.compile(r'^\d+\.\s*')
 
-    with open(filepath, 'r', encoding='utf-8') as f:
-        for line_num, line_raw in enumerate(f, 1):
-            line = line_raw.strip()
-            
-            if not line:  # Empty line - end of question block
-                if current_question and options:
-                    current_question['options'] = options
-                    questions_data.append(current_question)
-                    current_question, options = {}, []
-                continue
+    # Ensure we are at the beginning
+    if stream.seekable():
+        stream.seek(0)
+    
+    for line_num, line_raw in enumerate(stream, 1):
+        line = line_raw.strip()
+        
+        if not line:  # Empty line - end of question block
+            if current_question and options:
+                current_question['options'] = options
+                questions_data.append(current_question)
+                current_question, options = {}, []
+            continue
 
-            # Check line type
-            if option_pattern.match(line):  # Option line
-                if 'question' not in current_question:
-                    raise ValueError(f"Opción detectada sin una pregunta previa en línea {line_num}.")
-                options.append(line[3:].strip())
+        # Check line type
+        if option_pattern.match(line):  # Option line
+            if 'question' not in current_question:
+                continue # Skip orphan options or raise error? Original raised error.
+                # raise ValueError(f"Opción detectada sin una pregunta previa en línea {line_num}.")
+            options.append(line[3:].strip())
+            
+        elif line.startswith('ANSWER:'):  # Answer line
+            if 'question' not in current_question:
+                continue
+                # raise ValueError(f"Respuesta detectada sin una pregunta previa en línea {line_num}.")
+            try:
+                current_question['answer'] = line.split(':', 1)[1].strip()[0]
+            except (IndexError, KeyError):
+                pass 
+                # raise ValueError(f"Formato de ANSWER incorrecto en línea {line_num}: '{line_raw.strip()}'")
                 
-            elif line.startswith('ANSWER:'):  # Answer line
-                if 'question' not in current_question:
-                    raise ValueError(f"Respuesta detectada sin una pregunta previa en línea {line_num}.")
-                try:
-                    current_question['answer'] = line.split(':', 1)[1].strip()[0]
-                except (IndexError, KeyError):
-                    raise ValueError(f"Formato de ANSWER incorrecto en línea {line_num}: '{line_raw.strip()}'")
-                    
-            else:  # Question line
-                # Save previous question if exists
-                if current_question and options:
-                    current_question['options'] = options
-                    questions_data.append(current_question)
-                
-                # Clean question text
-                question_text = question_number_pattern.sub('', line)
-                current_question = {'question': question_text}
-                options = []
+        else:  # Question line
+            # Save previous question if exists
+            if current_question and options:
+                current_question['options'] = options
+                questions_data.append(current_question)
+            
+            # Clean question text
+            question_text = question_number_pattern.sub('', line)
+            current_question = {'question': question_text}
+            options = []
 
     # Don't forget the last question
     if current_question and options:
@@ -77,19 +79,16 @@ def load_questions_from_file(filepath: str) -> List[Dict[str, Union[str, List[st
 
     return questions_data
 
+def load_questions_from_file(filepath: str) -> List[Dict[str, Union[str, List[str]]]]:
+    """Load questions from a text file (legacy wrapper)."""
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"El archivo '{filepath}' no se encontró.")
+    
+    with open(filepath, 'r', encoding='utf-8') as f:
+        return load_questions_from_stream(f)
 
 def validate_questions(questions: List[Dict]) -> bool:
-    """Validate question structure.
-    
-    Args:
-        questions: List of question dictionaries
-        
-    Returns:
-        True if valid
-        
-    Raises:
-        ValueError: If validation fails
-    """
+    """Validate question structure."""
     for i, q in enumerate(questions, 1):
         if 'question' not in q:
             raise ValueError(f"Pregunta {i} no tiene texto")

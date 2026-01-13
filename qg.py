@@ -26,11 +26,11 @@ def get_gemini_api_key():
                          "Por favor, configúrala con tu clave de API de Google AI.")
     return api_key
 
-def extract_text_from_pdf(file_path):
-    """Extrae texto de un fichero PDF."""
-    print(f"📄 Extrayendo texto del PDF: {os.path.basename(file_path)}...")
+def extract_text_from_pdf(file_obj):
+    """Extrae texto de un objeto fichero PDF (stream o path)."""
+    print(f"📄 Extrayendo texto del PDF...")
     try:
-        reader = pypdf.PdfReader(file_path)
+        reader = pypdf.PdfReader(file_obj)
         text = ""
         for page in reader.pages:
             text += page.extract_text() or ""
@@ -39,22 +39,22 @@ def extract_text_from_pdf(file_path):
         print(f"Error al leer el PDF: {e}")
         return None
 
-def extract_text_from_docx(file_path):
-    """Extrae texto de un fichero DOCX."""
-    print(f"📄 Extrayendo texto del DOCX: {os.path.basename(file_path)}...")
+def extract_text_from_docx(file_obj):
+    """Extrae texto de un objeto fichero DOCX (stream o path)."""
+    print(f"📄 Extrayendo texto del DOCX...")
     try:
-        doc = docx.Document(file_path)
+        doc = docx.Document(file_obj)
         text = "\n".join([para.text for para in doc.paragraphs])
         return text
     except Exception as e:
         print(f"Error al leer el DOCX: {e}")
         return None
 
-def extract_text_from_pptx(file_path):
-    """Extrae texto de un fichero PPTX."""
-    print(f"📄 Extrayendo texto del PPTX: {os.path.basename(file_path)}...")
+def extract_text_from_pptx(file_obj):
+    """Extrae texto de un objeto fichero PPTX (stream o path)."""
+    print(f"📄 Extrayendo texto del PPTX...")
     try:
-        prs = Presentation(file_path)
+        prs = Presentation(file_obj)
         text = ""
         for slide in prs.slides:
             for shape in slide.shapes:

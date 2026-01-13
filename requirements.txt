@@ -19,6 +19,7 @@ requests>=2.31.0
 # Web interface dependencies
 flask>=3.0.0
 werkzeug>=3.0.1
+Flask-WTF>=1.2.1
 
 # PDF export
 reportlab>=4.0.7

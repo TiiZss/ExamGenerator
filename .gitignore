@@ -37,6 +37,7 @@ examgenerator_cache/
 
 # Docker
 .env
+.env.production
 !.env.example
 
 # Output directory (keep structure, ignore content)

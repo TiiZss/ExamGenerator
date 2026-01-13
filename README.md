@@ -1,6 +1,6 @@
 # 🎓 ExamGenerator: Generador Avanzado de Exámenes Aleatorios
 
-[![Version](https://img.shields.io/badge/Version-12.20260111-orange.svg)](https://github.com/TiiZss/ExamGenerator/releases)
+[![Version](https://img.shields.io/badge/Version-13.20260113-orange.svg)](https://github.com/TiiZss/ExamGenerator/releases)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org)
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
@@ -18,8 +18,9 @@ Un sistema completo y profesional en Python para generar exámenes aleatorios co
 
 ## 🌟 **Características Principales**
 
-### 🌐 **Interfaz Web v12**
-- **🎨 Interfaz Moderna**: Dashboard web completo con diseño responsive y logo TiiZss
+### 🌐 **Interfaz Web v13**
+- **🎨 Interfaz Moderna & Compacta**: Diseño UI refinado, padding optimizado y layouts alineados.
+- **🔢 Contador Persistente**: Rastreo global de exámenes generados (data/stats.json).
 - **📝 Generación Web**: Crear exámenes y preguntas sin usar la terminal
 - **⚙️ Configuración API Keys**: Página web para gestionar Google Gemini API key
 - **🤖 Dual AI Engine**: Soporte para Google Gemini 2.5 y Ollama local
@@ -57,11 +58,10 @@ Un sistema completo y profesional en Python para generar exámenes aleatorios co
 - **Configuración .env**: Variables de entorno centralizadas
 - **Un Solo Comando**: `docker-compose up -d` para todo el stack
 
-### 🏗️ **Arquitectura Modular v12**
+### 🏗️ **Arquitectura Modular v13**
 ```
 examgenerator/
-├── core/          # Lógica central
-├── exporters/     # Exportadores de formatos
+├── core/            <p>ExamGenerator v13.20260113 | by TiiZss | 2026</p>ortadores de formatos
 ├── ai/            # Clientes de IA
 ├── utils/         # Utilidades (logging, cache, validators)
 └── web/           # Aplicación web Flask
@@ -425,15 +425,16 @@ Este proyecto está licenciado bajo la Licencia GPL v3.0 - ver el archivo [LICEN
 
 ## 📈 **Estadísticas del Proyecto**
 
-- 🎯 **Versión Actual**: 12.20260111
+- 🎯 **Versión Actual**: 13.20260113
 - 🐍 **Python**: 3.11+
 - 🐳 **Docker**: Stack completo con 3 contenedores
 - 📦 **Dependencias**: 15+ librerías principales
-- 🌟 **Características**: 20+ funcionalidades avanzadas
+- 🌟 **Características**: 25+ funcionalidades avanzadas
 - 📄 **Formatos Soportados**: 7 tipos diferentes (TXT, DOCX, XLSX, CSV, HTML, PDF, AIKEN)
 - 🔧 **Placeholders**: 15+ variables automáticas
 - 🛠️ **Scripts de Instalación**: 6 opciones diferentes
 - 🤖 **Motores IA**: Google Gemini 2.5 + Ollama local
+- 🔐 **Seguridad**: Procesamiento 100% en memoria (sin disco) + Auth opcional
 
 ---
 

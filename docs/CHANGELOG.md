@@ -7,6 +7,36 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+## [13.20260113] - 2026-01-13
+
+### 🚀 Añadido
+- **Contador Persistente de Exámenes**: Sistema de seguimiento global de exámenes generados
+  - Almacenamiento en archivo JSON (`data/stats.json`)
+  - Visualización en dashboard principal
+  - Persistencia entre reinicios de contenedor
+- **Badges Sociales**: Añadido badge "Buy Me a Coffee" en el footer y README
+- **Soporte de Auth Opcional**: Variables `BASIC_AUTH_USER` y `PASS` ahora son opcionales
+  - Despliegue en producción sin contraseña si no se configuran credenciales
+
+### 🎨 Mejorado
+- **UI Ultra-Compacta v13**: Rediseño completo para maximizar espacio
+  - Formularios inline en una sola fila (Generar Exámenes y Preguntas)
+  - Altura de inputs y botones estandarizada
+  - Reducción de márgenes y padding en contenedores
+  - Listas de características compactas
+  - Alineación vertical centrada de elementos de cabecera
+- **Consistencia Visual**:
+  - Dropsdowns y inputs con misma altura (padding `8px 10px`)
+  - Botones de acción primarios centrados
+  - Indentación corregida en listas de información
+
+### 🔐 Seguridad
+- **Procesamiento en Memoria**: Eliminada escritura de archivos temporales en disco
+  - Uso de `io.BytesIO` y `tempfile` seguros
+  - Reducción de superficie de ataque
+- **Auth Flexible**: Elimina error 500 si no hay credenciales en producción
+
+
 ## [12.20260112] - 2026-01-12
 
 ### 🚀 Añadido

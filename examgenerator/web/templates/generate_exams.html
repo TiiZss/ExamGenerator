@@ -8,26 +8,53 @@
     .form-row-inline {
         gap: 10px;
     }
+
     .form-row-inline .form-group {
         margin-bottom: 10px;
     }
+
     @media (min-width: 900px) {
         .form-row-inline {
             flex-wrap: nowrap;
         }
+
         .form-row-inline .form-group {
             min-width: 0;
         }
-        #estimated-time { min-width: 190px; }
+
+        #estimated-time {
+            min-width: 190px;
+        }
     }
+
     @media (max-width: 768px) {
-        body { padding: 12px; }
-        main { padding: 20px; }
-        .card { padding: 18px; }
-        .form-row-inline { gap: 8px; }
-        .form-row-inline .form-group { margin-bottom: 6px; }
-        .form-row-inline .form-group small { font-size: 0.85em; }
-        #estimated-time { padding: 10px; }
+        body {
+            padding: 12px;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .card {
+            padding: 18px;
+        }
+
+        .form-row-inline {
+            gap: 8px;
+        }
+
+        .form-row-inline .form-group {
+            margin-bottom: 6px;
+        }
+
+        .form-row-inline .form-group small {
+            font-size: 0.85em;
+        }
+
+        #estimated-time {
+            padding: 10px;
+        }
     }
 </style>
 {% endblock %}
@@ -53,77 +80,87 @@ A) Opción 1
 B) Opción 2
 C) Opción 3
 D) Opción 4
-ANSWER: C)
     </pre>
 </div>
 
 <form method="POST" enctype="multipart/form-data" class="card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="form-group">
         <label for="questions_file">📁 Archivo de Preguntas (TXT):</label>
         <input type="file" id="questions_file" name="questions_file" accept=".txt" required>
     </div>
-    
+
     <div class="form-group">
         <label for="exam_prefix">📝 Prefijo del Examen:</label>
-        <input type="text" id="exam_prefix" name="exam_prefix" value="Parcial" placeholder="Ej: Parcial, Final, Simulacro" required>
+        <input type="text" id="exam_prefix" name="exam_prefix" value="Parcial"
+            placeholder="Ej: Parcial, Final, Simulacro" required>
     </div>
-    
+
     <div class="form-row-inline" style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
-        <div class="form-group" style="flex:1;min-width:150px;">
-            <label for="num_exams">🔢 Número de Exámenes:</label>
+        <div class="form-group" style="flex:1;min-width:140px;">
+            <label for="num_exams">🔢 Num Exámenes:</label>
             <input type="number" id="num_exams" name="num_exams" value="3" min="1" max="100" required>
         </div>
-        
-        <div class="form-group" style="flex:1;min-width:170px;">
-            <label for="questions_per_exam">❓ Preguntas por Examen:</label>
-            <input type="number" id="questions_per_exam" name="questions_per_exam" value="10" min="1" max="200" required>
+
+        <div class="form-group" style="flex:1;min-width:160px;">
+            <label for="questions_per_exam">❓ Preguntas/Examen:</label>
+            <input type="number" id="questions_per_exam" name="questions_per_exam" value="10" min="1" max="200"
+                required>
         </div>
 
-        <div class="form-group" style="flex:1;min-width:190px;">
-            <label for="minutes_per_question">⏱️ Minutos por Pregunta:</label>
-            <input type="number" id="minutes_per_question" name="minutes_per_question" value="{{ default_time_per_question or 1 }}" min="0.1" step="0.1" required oninput="updateEstimatedTime()" onchange="updateEstimatedTime()">
-            <small style="display:block;color:#666;">Permite dar más o menos tiempo por pregunta (se redondea hacia arriba).</small>
+        <div class="form-group" style="flex:1;min-width:150px;">
+            <label for="minutes_per_question">⏱️ Min/Pregunta:</label>
+            <input type="number" id="minutes_per_question" name="minutes_per_question"
+                value="{{ default_time_per_question or 1 }}" min="0.1" step="0.1" required
+                oninput="updateEstimatedTime()" onchange="updateEstimatedTime()">
         </div>
 
-        <div class="form-group" id="estimated-time" style="flex:1;min-width:180px;background:#f8f9fa;padding:12px;border-radius:8px;border:1px solid #e0e0e0;">
-            <strong>⏳ Tiempo estimado:</strong> <span id="estimated-time-value">10 minutos</span>
+        <div class="form-group" style="flex:1;min-width:180px;">
+            <label for="estimated-time-value">⏳ Tiempo Estimado:</label>
+            <input type="text" id="estimated-time-value" readonly
+                style="background-color: #f8f9fa; cursor: default; font-weight: bold; color: #495057;"
+                value="10 minutos">
+        </div>
+
+        <div class="form-group" style="flex:1;min-width:180px;">
+            <label for="export_format">💾 Formato:</label>
+            <select id="export_format" name="export_format" required onchange="toggleTemplateFields()">
+                <option value="txt">TXT</option>
+                <option value="docx">DOCX</option>
+                <option value="both">Ambos</option>
+            </select>
         </div>
     </div>
-    
-    <div class="form-group">
-        <label for="export_format">💾 Formato de Exportación:</label>
-        <select id="export_format" name="export_format" required onchange="toggleTemplateFields()">
-            <option value="txt">TXT</option>
-            <option value="docx">DOCX</option>
-            <option value="both">Ambos (TXT + DOCX)</option>
-        </select>
-    </div>
-    
+
     <!-- Opciones de plantilla DOCX (ocultas por defecto) -->
     <div id="template-options" style="display: none;">
-        <div class="form-group" style="background: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #b3d9ff;">
+        <div class="form-group"
+            style="background: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #b3d9ff;">
             <label>
                 <input type="checkbox" id="use_template" name="use_template" onchange="toggleTemplateUpload()">
                 📄 Usar plantilla DOCX personalizada
             </label>
             <small style="display: block; color: #666; margin-top: 5px;">
                 Las plantillas permiten personalizar encabezados, logos y formato del examen.<br>
-                <strong>Placeholders disponibles:</strong> {{EXAM_NUMBER}}, {{EXAM_PREFIX}}, {{DATE}}, {{CONTENT}}, {{NUM_QUESTIONS}}, {{EXAM_TIME}}
+                <strong>Placeholders disponibles:</strong> {{EXAM_NUMBER}}, {{EXAM_PREFIX}}, {{DATE}}, {{CONTENT}},
+                {{NUM_QUESTIONS}}, {{EXAM_TIME}}
             </small>
         </div>
-        
+
         <div id="template-upload" style="display: none;">
             <div class="form-group">
                 <label for="template_file">📎 Plantilla DOCX:</label>
                 <input type="file" id="template_file" name="template_file" accept=".docx">
                 <small style="display: block; color: #666; margin-top: 5px;">
-                    <strong>💡 Tip:</strong> Crea un documento Word con tu diseño y usa <code>{{CONTENT}}</code> donde quieras las preguntas.<br>
-                    Ver <a href="/templates/README.md" target="_blank" style="color: #007bff;">documentación completa</a> de placeholders.
+                    <strong>💡 Tip:</strong> Crea un documento Word con tu diseño y usa <code>{{CONTENT}}</code> donde
+                    quieras las preguntas.<br>
+                    Ver <a href="/templates/README.md" target="_blank" style="color: #007bff;">documentación
+                        completa</a> de placeholders.
                 </small>
             </div>
         </div>
     </div>
-    
+
     <div style="text-align: center; margin-top: 20px;">
         <button type="submit" id="submit-btn">🚀 Generar Exámenes</button>
     </div>
@@ -133,7 +170,8 @@ ANSWER: C)
 <div id="progress-container" style="display: none;" class="card">
     <h3>⏳ Generando Exámenes...</h3>
     <div style="background: #e9ecef; border-radius: 10px; height: 30px; overflow: hidden; margin: 20px 0;">
-        <div id="progress-bar" style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+        <div id="progress-bar"
+            style="background: linear-gradient(90deg, #667eea, #764ba2); height: 100%; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
             <span id="progress-text">0%</span>
         </div>
     </div>
@@ -143,166 +181,183 @@ ANSWER: C)
 </div>
 
 <script>
-// Mostrar/ocultar opciones de plantilla según el formato seleccionado
-function toggleTemplateFields() {
-    const format = document.getElementById('export_format').value;
-    const templateOptions = document.getElementById('template-options');
-    
-    // Mostrar opciones de plantilla solo si el formato incluye DOCX
-    if (format === 'docx' || format === 'both') {
-        templateOptions.style.display = 'block';
-    } else {
-        templateOptions.style.display = 'none';
-        // Desmarcar checkbox si se oculta
-        document.getElementById('use_template').checked = false;
-        document.getElementById('template-upload').style.display = 'none';
+    // Mostrar/ocultar opciones de plantilla según el formato seleccionado
+    function toggleTemplateFields() {
+        const format = document.getElementById('export_format').value;
+        const templateOptions = document.getElementById('template-options');
+
+        // Mostrar opciones de plantilla solo si el formato incluye DOCX
+        if (format === 'docx' || format === 'both') {
+            templateOptions.style.display = 'block';
+        } else {
+            templateOptions.style.display = 'none';
+            // Desmarcar checkbox si se oculta
+            document.getElementById('use_template').checked = false;
+            document.getElementById('template-upload').style.display = 'none';
+        }
     }
-}
 
-// Mostrar/ocultar campo de subida de plantilla
-function toggleTemplateUpload() {
-    const useTemplate = document.getElementById('use_template').checked;
-    const templateUpload = document.getElementById('template-upload');
-    
-    if (useTemplate) {
-        templateUpload.style.display = 'block';
-    } else {
-        templateUpload.style.display = 'none';
-        // Limpiar archivo seleccionado
-        document.getElementById('template_file').value = '';
+    // Mostrar/ocultar campo de subida de plantilla
+    function toggleTemplateUpload() {
+        const useTemplate = document.getElementById('use_template').checked;
+        const templateUpload = document.getElementById('template-upload');
+
+        if (useTemplate) {
+            templateUpload.style.display = 'block';
+        } else {
+            templateUpload.style.display = 'none';
+            // Limpiar archivo seleccionado
+            document.getElementById('template_file').value = '';
+        }
     }
-}
 
-// Calcular tiempo estimado antes de generar
-function formatEstimatedTime(totalMinutes) {
-    const minutes = Math.max(1, Math.ceil(totalMinutes));
-    if (minutes < 60) return `${minutes} minutos`;
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (mins === 0) return `${hours} ${hours === 1 ? 'hora' : 'horas'}`;
-    return `${hours} ${hours === 1 ? 'hora' : 'horas'} y ${mins} minutos`;
-}
+    // Calcular tiempo estimado antes de generar
+    function formatEstimatedTime(totalMinutes) {
+        const minutes = Math.max(1, Math.ceil(totalMinutes));
+        if (minutes < 60) return `${minutes} minutos`;
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        if (mins === 0) return `${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+        return `${hours} ${hours === 1 ? 'hora' : 'horas'} y ${mins} minutos`;
+    }
 
-function updateEstimatedTime() {
-    const questions = parseFloat(document.getElementById('questions_per_exam').value || '0');
-    const minutesPerQuestion = parseFloat(document.getElementById('minutes_per_question').value || '{{ default_time_per_question or 1 }}');
-    const total = questions * minutesPerQuestion;
-    const text = formatEstimatedTime(total);
-    document.getElementById('estimated-time-value').textContent = text;
-}
+    function updateEstimatedTime() {
+        const questions = parseFloat(document.getElementById('questions_per_exam').value || '0');
+        const minutesPerQuestion = parseFloat(document.getElementById('minutes_per_question').value || '{{ default_time_per_question or 1 }}');
+        const total = questions * minutesPerQuestion;
+        const text = formatEstimatedTime(total);
+        document.getElementById('estimated-time-value').value = text;
+    }
 
-// Inicializar al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    toggleTemplateFields();
-    updateEstimatedTime();
-    document.getElementById('questions_per_exam').addEventListener('input', updateEstimatedTime);
-    document.getElementById('minutes_per_question').addEventListener('input', updateEstimatedTime);
-    
-    // Manejar envío del formulario con progreso
-    const form = document.querySelector('form');
-    const submitBtn = document.getElementById('submit-btn');
-    const progressContainer = document.getElementById('progress-container');
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const progressStatus = document.getElementById('progress-status');
-    
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault(); // Prevenir envío tradicional
-        
-        const numExams = parseInt(document.getElementById('num_exams').value);
-        const questionsPerExam = parseInt(document.getElementById('questions_per_exam').value);
-        const totalQuestions = numExams * questionsPerExam;
-        
-        // Mostrar indicador de progreso
-        submitBtn.disabled = true;
-        submitBtn.textContent = '⏳ Generando...';
-        progressContainer.style.display = 'block';
-        form.style.display = 'none'; // Ocultar formulario
-        
-        // Scroll hacia el indicador
-        progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Simular progreso (estimación)
-        let progress = 0;
-        const timePerQuestion = 200; // 200ms por pregunta (estimado)
-        const totalTime = totalQuestions * timePerQuestion;
-        const updateInterval = Math.max(100, totalTime / 100); // Min 100ms
-        
-        const progressInterval = setInterval(function() {
-            if (progress < 95) { // Dejar el 5% final para cuando realmente termine
-                progress += 1;
-                progressBar.style.width = progress + '%';
-                progressText.textContent = progress + '%';
-                
-                // Actualizar mensajes de estado
-                if (progress < 10) {
-                    progressStatus.textContent = '📂 Preparando archivos...';
-                } else if (progress < 30) {
-                    progressStatus.textContent = '🎲 Mezclando preguntas...';
-                } else if (progress < 60) {
-                    progressStatus.textContent = `📝 Generando exámenes (${Math.floor(progress / 10)} de ${numExams})...`;
-                } else if (progress < 85) {
-                    progressStatus.textContent = '📊 Generando respuestas...';
-                } else {
-                    progressStatus.textContent = '✍️ Finalizando...';
+    // Inicializar al cargar la página
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleTemplateFields();
+        updateEstimatedTime();
+        document.getElementById('questions_per_exam').addEventListener('input', updateEstimatedTime);
+        document.getElementById('minutes_per_question').addEventListener('input', updateEstimatedTime);
+
+        // Manejar envío del formulario con progreso
+        const form = document.querySelector('form');
+        const submitBtn = document.getElementById('submit-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const progressStatus = document.getElementById('progress-status');
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault(); // Prevenir envío tradicional
+
+            const numExams = parseInt(document.getElementById('num_exams').value);
+            const questionsPerExam = parseInt(document.getElementById('questions_per_exam').value);
+            const totalQuestions = numExams * questionsPerExam;
+
+            // Mostrar indicador de progreso
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Generando...';
+            progressContainer.style.display = 'block';
+            form.style.display = 'none'; // Ocultar formulario
+
+            // Scroll hacia el indicador
+            progressContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Simular progreso (estimación)
+            let progress = 0;
+            const timePerQuestion = 200; // 200ms por pregunta (estimado)
+            const totalTime = totalQuestions * timePerQuestion;
+            const updateInterval = Math.max(100, totalTime / 100); // Min 100ms
+
+            const progressInterval = setInterval(function () {
+                if (progress < 95) { // Dejar el 5% final para cuando realmente termine
+                    progress += 1;
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = progress + '%';
+
+                    // Actualizar mensajes de estado
+                    if (progress < 10) {
+                        progressStatus.textContent = '📂 Preparando archivos...';
+                    } else if (progress < 30) {
+                        progressStatus.textContent = '🎲 Mezclando preguntas...';
+                    } else if (progress < 60) {
+                        progressStatus.textContent = `📝 Generando exámenes (${Math.floor(progress / 10)} de ${numExams})...`;
+                    } else if (progress < 85) {
+                        progressStatus.textContent = '📊 Generando respuestas...';
+                    } else {
+                        progressStatus.textContent = '✍️ Finalizando...';
+                    }
                 }
-            }
-        }, updateInterval);
-        
-        try {
-            // Enviar formulario con AJAX
-            const formData = new FormData(form);
-            const response = await fetch('/generate-exams', {
-                method: 'POST',
-                body: formData
-            });
-            
-            clearInterval(progressInterval);
-            
-            if (response.ok) {
-                // Completar progreso
-                progressBar.style.width = '100%';
-                progressText.textContent = '100%';
-                progressStatus.textContent = '✅ ¡Exámenes generados exitosamente!';
-                progressStatus.style.color = '#28a745';
-                progressStatus.style.fontWeight = 'bold';
-                
-                // Descargar archivo ZIP
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `examenes_${new Date().getTime()}.zip`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-                
-                // Resetear formulario después de 3 segundos
-                setTimeout(function() {
-                    form.reset();
-                    form.style.display = 'block';
-                    progressContainer.style.display = 'none';
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '🚀 Generar Exámenes';
-                    progressBar.style.width = '0%';
-                    progressText.textContent = '0%';
-                    progressStatus.style.color = '#666';
-                    progressStatus.style.fontWeight = 'normal';
-                    updateEstimatedTime();
-                }, 3000);
-            } else {
-                // Error
+            }, updateInterval);
+
+            try {
+                // Enviar formulario con AJAX
+                const formData = new FormData(form);
+                const response = await fetch('/generate-exams', {
+                    method: 'POST',
+                    body: formData
+                });
+
                 clearInterval(progressInterval);
-                const errorText = await response.text();
+
+                if (response.ok) {
+                    // Completar progreso
+                    progressBar.style.width = '100%';
+                    progressText.textContent = '100%';
+                    progressStatus.textContent = '✅ ¡Exámenes generados exitosamente!';
+                    progressStatus.style.color = '#28a745';
+                    progressStatus.style.fontWeight = 'bold';
+
+                    // Descargar archivo ZIP
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `examenes_${new Date().getTime()}.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    // Resetear formulario después de 3 segundos
+                    setTimeout(function () {
+                        form.reset();
+                        form.style.display = 'block';
+                        progressContainer.style.display = 'none';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '🚀 Generar Exámenes';
+                        progressBar.style.width = '0%';
+                        progressText.textContent = '0%';
+                        progressStatus.style.color = '#666';
+                        progressStatus.style.fontWeight = 'normal';
+                        updateEstimatedTime();
+                    }, 3000);
+                } else {
+                    // Error
+                    clearInterval(progressInterval);
+                    const errorText = await response.text();
+                    progressBar.style.width = '100%';
+                    progressBar.style.background = '#dc3545';
+                    progressText.textContent = 'Error';
+                    progressStatus.textContent = '❌ Error al generar exámenes. Verifica los datos.';
+                    progressStatus.style.color = '#dc3545';
+
+                    // Mostrar formulario de nuevo
+                    setTimeout(function () {
+                        form.style.display = 'block';
+                        progressContainer.style.display = 'none';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '🚀 Generar Exámenes';
+                        progressBar.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
+                    }, 5000);
+                }
+            } catch (error) {
+                clearInterval(progressInterval);
+                console.error('Error:', error);
                 progressBar.style.width = '100%';
                 progressBar.style.background = '#dc3545';
                 progressText.textContent = 'Error';
-                progressStatus.textContent = '❌ Error al generar exámenes. Verifica los datos.';
+                progressStatus.textContent = '❌ Error de conexión: ' + error.message;
                 progressStatus.style.color = '#dc3545';
-                
-                // Mostrar formulario de nuevo
-                setTimeout(function() {
+
+                setTimeout(function () {
                     form.style.display = 'block';
                     progressContainer.style.display = 'none';
                     submitBtn.disabled = false;
@@ -310,24 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     progressBar.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
                 }, 5000);
             }
-        } catch (error) {
-            clearInterval(progressInterval);
-            console.error('Error:', error);
-            progressBar.style.width = '100%';
-            progressBar.style.background = '#dc3545';
-            progressText.textContent = 'Error';
-            progressStatus.textContent = '❌ Error de conexión: ' + error.message;
-            progressStatus.style.color = '#dc3545';
-            
-            setTimeout(function() {
-                form.style.display = 'block';
-                progressContainer.style.display = 'none';
-                submitBtn.disabled = false;
-                submitBtn.textContent = '🚀 Generar Exámenes';
-                progressBar.style.background = 'linear-gradient(90deg, #667eea, #764ba2)';
-            }, 5000);
-        }
+        });
     });
-});
 </script>
 {% endblock %}
