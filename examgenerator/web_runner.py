@@ -5,8 +5,8 @@ Script para iniciar la aplicación web de ExamGenerator.
 import sys
 from pathlib import Path
 
-# Agregar directorio raíz al path
-sys.path.insert(0, str(Path(__file__).parent))
+# Agregar directorio raíz al path si es necesario
+# sys.path.insert(0, str(Path(__file__).parent))
 
 from examgenerator.web.app import app
 from examgenerator.utils.logging_config import setup_logging
@@ -28,7 +28,7 @@ def run_app(host='0.0.0.0', port=5000, debug=False):
     app.run(debug=debug, host=host, port=port)
 
 
-if __name__ == '__main__':
+def main():
     # Configurar logging
     setup_logging(verbose=False, log_file='webapp.log')
     
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     ╔══════════════════════════════════════════════════════════════╗
     ║                                                              ║
     ║              📝 ExamGenerator Web Interface                  ║
-    ║                   Version 11.20260111                        ║
+    ║                   Version 13.20260114                        ║
     ║                                                              ║
     ╚══════════════════════════════════════════════════════════════╝
     
@@ -56,3 +56,6 @@ if __name__ == '__main__':
         app.run(debug=True, host='0.0.0.0', port=5000)
     except KeyboardInterrupt:
         print("\n\n✅ Servidor detenido correctamente")
+
+if __name__ == '__main__':
+    main()

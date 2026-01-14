@@ -1,5 +1,8 @@
 # ExamGenerator - Start Script (PowerShell)
 
+# Navigate to project root
+Set-Location "$PSScriptRoot\.."
+
 Write-Host "🚀 Starting ExamGenerator..." -ForegroundColor Cyan
 Write-Host "============================" -ForegroundColor Cyan
 
@@ -17,7 +20,8 @@ if (-not (Test-Path .env)) {
         Write-Host "Creating .env from .env.example..."
         Copy-Item .env.example .env
         Write-Host "✓ .env created." -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "❌ Error: .env.example not found. Cannot create config." -ForegroundColor Red
         exit 1
     }

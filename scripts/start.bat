@@ -1,6 +1,9 @@
 @echo off
 setlocal
 
+:: Navigate to project root (one level up from scripts/)
+pushd "%~dp0.."
+
 echo 🚀 Starting ExamGenerator...
 echo ============================
 
@@ -37,4 +40,6 @@ echo -----------------------------------
 echo 🌐 Web Interface: http://localhost:5000
 echo 📋 Logs: docker-compose logs -f web
 echo -----------------------------------
+
+popd
 pause

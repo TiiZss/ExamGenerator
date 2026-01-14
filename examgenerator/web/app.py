@@ -44,53 +44,14 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max
 # Initialize CSRF Protection
 csrf = CSRFProtect(app)
 
-# Basic Auth Configuration
-BASIC_AUTH_USER = os.environ.get('BASIC_AUTH_USER')
-BASIC_AUTH_PASS = os.environ.get('BASIC_AUTH_PASS')
+# Basic Auth Removed by user request
+# def check_auth(username, password): ...
+# def authenticate(): ...
+# def requires_auth(f): ...
 
-def check_auth(username, password):
-    """Check if a username/password combination is valid."""
-    return username == BASIC_AUTH_USER and password == BASIC_AUTH_PASS
-
-def authenticate():
-    """Sends a 401 response that enables basic auth."""
-    return Response(
-        'Could not verify your access level for that URL.\n'
-        'You have to login with proper credentials', 401,
-        {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if not BASIC_AUTH_USER or not BASIC_AUTH_PASS:
-            # If auth not configured, skip (or fail secure? let's fail secure if prod)
-            if app.config['ENV'] == 'production':
-                 return Response("Server Misconfiguration: Auth credentials not set.", 500)
-            return f(*args, **kwargs)
-
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return authenticate()
-        return f(*args, **kwargs)
-    return decorated
-
-# Apply auth globally to all routes except health check (if exists) or static
-@app.before_request
-def require_login():
-    if request.endpoint == 'static': 
-        return
-    # Exclude health check if you have one
-    if request.endpoint == 'health_check':
-        return
-    
-    # We apply auth manually here instead of decorator on every route
-    if not BASIC_AUTH_USER or not BASIC_AUTH_PASS:
-        # Auth disabled if no credentials set
-        return
-
-    auth = request.authorization
-    if not auth or not check_auth(auth.username, auth.password):
-        return authenticate()
+# @app.before_request
+# def require_login():
+#     pass
 
 # Rutas absolutas basadas en la ubicación de app.py
 BASE_DIR = Path(__file__).parent.absolute()
@@ -109,6 +70,12 @@ setup_logging(verbose=False, log_file='webapp.log')
 
 # Inicializar caché
 cache = QuestionCache()
+
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint for monitoring."""
+    return jsonify({'status': 'ok', 'service': 'web'})
 
 
 @app.route('/')

@@ -7,6 +7,19 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+## [13.20260114] - 2026-01-14
+
+### 🚀 Añadido
+- **Automated Deployment**: Script de despliegue `scripts/deploy.py` con `paramiko` para actualizaciones one-click.
+- **Health Checks**: Endpoint `/health` público y verificaciones post-despliegue automáticas.
+- **SSL Resilience**: Reinstalación automática de certificados SSL en Nginx si se detecta configuración faltante.
+- **Auth Opcional**: Eliminación de Basic Auth forzado para permitir acceso público por defecto.
+
+### 🔧 Cambiado
+- **Build Optimization**: Limpieza de archivos obsoletos (`run_web.py`, `eg.py`) en Docker.
+- **Docker Stack**: Eliminación de volumenes invalidos y corrección de referencias en `docker-compose.yml`.
+- **Nginx Config**: Manejo agresivo de conflictos de puertos (80) y limpieza de sitios default.
+
 ## [13.20260113] - 2026-01-13
 
 ### 🚀 Añadido

@@ -16,11 +16,14 @@ try:
     console = Console()
 except ImportError:
     RICH_AVAILABLE = False
-    console = None  # type: ignore
+    class DummyConsole:
+        def print(self, *args, **kwargs):
+            print(*args)
+    console = DummyConsole()
 
 
 @click.group()
-@click.version_option(version="12.20260111", prog_name="ExamGenerator")
+@click.version_option(version="13.20260114", prog_name="ExamGenerator")
 def cli():
     """ExamGenerator - Generador avanzado de exámenes aleatorios con IA.
     
@@ -93,7 +96,7 @@ def generate_exams(questions_file, exam_prefix, num_exams, questions_per_exam,
             progress.update(task, description=f"Generando {num_exams} exámenes...")
             
             # Import and call main generation
-            import eg
+            from examgenerator import legacy as eg
             eg.main_generate(
                 questions_file=questions_file,
                 exam_prefix=exam_prefix,
@@ -176,7 +179,7 @@ def ai_generate(document_file, num_questions, language, engine, model, output, c
             progress.update(task, description=f"Extrayendo texto de {document_file}...")
             
             # Import qg functions
-            from qg import (extract_text_from_pdf, extract_text_from_docx, 
+            from examgenerator.ai import (extract_text_from_pdf, extract_text_from_docx, 
                            extract_text_from_pptx, generate_questions_with_gemini, 
                            generate_questions_with_ollama)
             
@@ -351,7 +354,7 @@ def run_web(host, port, debug):
     ))
     
     try:
-        import run_web
+        from examgenerator import web_runner as run_web
         run_web.run_app(host=host, port=port, debug=debug)
     except KeyboardInterrupt:
         console.print("\n[yellow]Servidor detenido[/yellow]")

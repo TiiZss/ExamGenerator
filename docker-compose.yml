@@ -1,4 +1,4 @@
-# ExamGenerator v12 - Docker Compose Stack
+# ExamGenerator v13 - Docker Compose Stack
 # Prefijo de contenedores: ExGen-
 
 # Configuración global
@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runtime
-    image: examgenerator:12.20260111
+    image: examgenerator:13.20260114
     environment:
       <<: *common-env
       EXAMGEN_MODE: "cli"
@@ -43,7 +43,7 @@ services:
       - examgen-network
     labels:
       com.examgenerator.service: "cli"
-      com.examgenerator.version: "12.20260111"
+      com.examgenerator.version: "13.20260114"
 
   # ----------------------------------------
   # ExGen-Web: Interfaz web
@@ -53,7 +53,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: examgenerator:12.20260111
+    image: examgenerator:13.20260114
     environment:
       <<: *common-env
       EXAMGEN_MODE: "web"
@@ -62,16 +62,10 @@ services:
       GOOGLE_API_KEY: "${GOOGLE_API_KEY:-}"
       OLLAMA_URL: "${OLLAMA_URL:-http://ollama:11434}"
       OLLAMA_MODEL: "${OLLAMA_MODEL:-phi3:mini}"
-      # Default credentials for local development
-      BASIC_AUTH_USER: "${BASIC_AUTH_USER:-admin}"
-      BASIC_AUTH_PASS: "${BASIC_AUTH_PASS:-admin}"
     volumes:
       # DEVELOPMENT: Montar código fuente para cambios en caliente
       - ./examgenerator:/app/examgenerator
-      - ./qg.py:/app/qg.py
-      - ./eg.py:/app/eg.py
       - ./cli.py:/app/cli.py
-      - ./run_web.py:/app/run_web.py
       # Volumen para archivos de preguntas
       - ./examples:/data/questions:ro
       # Volumen para archivos de preguntas (removed conficting templates mount)
@@ -102,7 +96,7 @@ services:
       - ollama
     labels:
       com.examgenerator.service: "web"
-      com.examgenerator.version: "12.20260111"
+      com.examgenerator.version: "13.20260114"
 
   # ----------------------------------------
   # ExGen-AI-Gemini: Worker para IA con Gemini
@@ -112,7 +106,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: examgenerator:12.20260111
+    image: examgenerator:13.20260114
     environment:
       <<: *common-env
       EXAMGEN_MODE: "ai-worker"
@@ -134,7 +128,7 @@ services:
     labels:
       com.examgenerator.service: "ai-worker"
       com.examgenerator.engine: "gemini"
-      com.examgenerator.version: "12.20260111"
+      com.examgenerator.version: "13.20260114"
 
   # ----------------------------------------
   # ExGen-Ollama: Servidor Ollama (local AI)
@@ -176,7 +170,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: examgenerator:12.20260111
+    image: examgenerator:13.20260114
     environment:
       <<: *common-env
       EXAMGEN_MODE: "ai-worker"
@@ -201,7 +195,7 @@ services:
     labels:
       com.examgenerator.service: "ai-worker"
       com.examgenerator.engine: "ollama"
-      com.examgenerator.version: "12.20260111"
+      com.examgenerator.version: "13.20260114"
 
 # ============================================
 # Volúmenes persistentes

@@ -36,3 +36,5 @@ tqdm>=4.66.1
 # mypy>=1.7.1
 
 typing-extensions>=4.8.0
+paramiko
+python-dotenv

@@ -36,7 +36,7 @@ FROM python:3.11-slim-bookworm AS runtime
 
 # Información del mantenedor
 LABEL maintainer="TiiZss <tiizss@github.com>"
-LABEL version="12.20260111"
+LABEL version="13.20260114"
 
 # Variables de entorno
 ENV PYTHONUNBUFFERED=1 \
@@ -71,7 +71,7 @@ COPY --chown=examgen:examgen config.yaml ./
 COPY --chown=examgen:examgen templates/ ./templates/
 COPY --chown=examgen:examgen examples/ ./examples/
 COPY --chown=examgen:examgen examgenerator/ ./examgenerator/
-COPY --chown=examgen:examgen eg.py cli.py qg.py run_web.py ./
+COPY --chown=examgen:examgen cli.py ./
 
 # Cambiar a usuario no-root
 USER examgen

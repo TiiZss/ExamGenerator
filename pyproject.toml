@@ -85,9 +85,9 @@ Documentation = "https://github.com/TiiZss/ExamGenerator#readme"
 "Bug Tracker" = "https://github.com/TiiZss/ExamGenerator/issues"
 
 [project.scripts]
-examgen = "eg:main"
-examgen-ai = "qg:main"
-examgen-web = "run_web:main"
+examgen = "examgenerator.legacy:main"
+examgen-ai = "examgenerator.ai:main"
+examgen-web = "examgenerator.web_runner:main"
 
 [build-system]
 requires = ["hatchling"]
