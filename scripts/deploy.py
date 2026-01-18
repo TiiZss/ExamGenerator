@@ -89,7 +89,8 @@ rm {DEPLOY_PACKAGE}
 
 # Ensure output directory exists (excluded from tar)
 mkdir -p output logs config
-chmod 777 output logs config
+echo "{DEPLOY_PASS}" | sudo -S chown -R 1000:1000 output logs config
+echo "{DEPLOY_PASS}" | sudo -S chmod -R 775 output logs config
 
 echo "🔍 DEBUG: Verifying Dockerfile content..."
 grep "COPY" Dockerfile || true

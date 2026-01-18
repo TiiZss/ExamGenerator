@@ -7,6 +7,12 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+## [13.20260118.1] - 2026-01-18
+
+### 🐛 Corregido
+- **Contador Persistente**: Solucionado bug donde el contador de exámenes no se guardaba reiniciar el contenedor.
+- **Seguridad**: Archivos de configuración y logs ahora usan permisos restrictivos (775) y bind mounts seguros.
+
 ## [13.20260118] - 2026-01-18
 
 ### 🚀 Añadido
