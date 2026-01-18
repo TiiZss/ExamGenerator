@@ -1,6 +1,6 @@
 [project]
 name = "examgenerator"
-version = "12.20260111"
+version = "13.20260118"
 description = "Generador avanzado de exámenes aleatorios con IA - Arquitectura Modular"
 authors = [
     {name = "TiiZss", email = "tiizss@github.com"}

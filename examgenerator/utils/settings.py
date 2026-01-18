@@ -50,3 +50,22 @@ def set_gemini_api_key(api_key: str) -> bool:
     settings = get_settings()
     settings['gemini_api_key'] = api_key
     return save_settings(settings)
+
+def get_ollama_url() -> str:
+    """
+    Obtiene la URL de Ollama.
+    Prioridad: 1) settings.json, 2) variable de entorno, 3) default host.docker.internal
+    """
+    settings = get_settings()
+    url = settings.get('ollama_url')
+    
+    if url:
+        return url
+        
+    return os.environ.get('OLLAMA_URL', 'http://host.docker.internal:11434')
+
+def set_ollama_url(url: str) -> bool:
+    """Guarda la URL de Ollama."""
+    settings = get_settings()
+    settings['ollama_url'] = url
+    return save_settings(settings)

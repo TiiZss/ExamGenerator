@@ -23,7 +23,11 @@ from examgenerator.utils.validators import (
 )
 from examgenerator.utils.cache import QuestionCache
 from examgenerator.utils.statistics import generate_exam_statistics, print_statistics
-from examgenerator.utils.settings import get_settings, save_settings, get_gemini_api_key, set_gemini_api_key
+from examgenerator.utils.settings import (
+    get_settings, save_settings, 
+    get_gemini_api_key, set_gemini_api_key,
+    get_ollama_url, set_ollama_url
+)
 from examgenerator.config import config as app_config
 
 # Import modular functions
@@ -330,8 +334,7 @@ def generate_questions():
                 )
             else:
                 # Ollama en modo no-interactivo para web
-                import os
-                ollama_url = os.getenv('OLLAMA_URL', 'http://ollama:11434')
+                ollama_url = get_ollama_url()
                 
                 questions = qg.generate_questions_with_ollama(
                     text_content=text_content,
@@ -384,7 +387,7 @@ def ollama_models():
     """Obtener lista de modelos disponibles en Ollama."""
     try:
         import requests
-        ollama_url = os.getenv('OLLAMA_URL', 'http://ollama:11434')
+        ollama_url = get_ollama_url()
         
         # Intentar obtener modelos de Ollama
         response = requests.get(f"{ollama_url}/api/tags", timeout=3)
@@ -439,14 +442,23 @@ def settings():
                 flash('✅ API Key de Gemini guardada correctamente', 'success')
             else:
                 flash('❌ Error al guardar la API Key', 'error')
-        else:
-            flash('⚠️ La API Key no puede estar vacía', 'error')
+        
+        # Guardar URL de Ollama
+        ollama_url = request.form.get('ollama_url', '').strip()
+        if ollama_url:
+            if set_ollama_url(ollama_url):
+                flash('✅ URL de Ollama guardada correctamente', 'success')
+            else:
+                flash('❌ Error al guardar la URL de Ollama', 'error')
         
         return redirect(url_for('settings'))
     
     # GET: Mostrar configuración actual
     current_key = get_gemini_api_key()
-    return render_template('settings.html', current_key=current_key or '')
+    current_ollama_url = get_ollama_url()
+    return render_template('settings.html', 
+                         current_key=current_key or '',
+                         current_ollama_url=current_ollama_url)
 
 
 @app.route('/settings/test-api-key', methods=['POST'])

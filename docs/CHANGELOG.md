@@ -7,6 +7,17 @@ y este proyecto adhiere a [Versionado Semántico](https://semver.org/lang/es/).
 
 ---
 
+## [13.20260118] - 2026-01-18
+
+### 🚀 Añadido
+- **Ollama URL Configurable**: Nueva opción en configuración para definir URL de Ollama personalizada.
+- **Seguridad Mejorada**: Disclaimer explícito sobre almacenamiento local de API Keys.
+
+### 🔧 Cambiado
+- **Arquitectura Ollama**: Eliminación del contenedor de Ollama en producción para usar instancia local del host.
+- **Conectividad Docker**: Configuración de `host.docker.internal` para comunicación con el host.
+- **UI Settings**: Mejora en la interfaz de configuración para mayor claridad.
+
 ## [13.20260114] - 2026-01-14
 
 ### 🚀 Añadido

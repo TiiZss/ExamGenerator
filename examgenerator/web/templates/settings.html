@@ -30,6 +30,21 @@
         </small>
     </div>
 
+    <h3>🤖 Ollama (Local AI)</h3>
+    <p style="margin-bottom: 20px;">
+        Configura la URL de conexión para tu instancia local de Ollama.<br>
+        <small>Por defecto en Docker: <code>http://host.docker.internal:11434</code></small>
+    </p>
+
+    <div class="form-group">
+        <label for="ollama_url">Ollama URL:</label>
+        <input type="text" id="ollama_url" name="ollama_url" value="{{ current_ollama_url }}"
+            placeholder="http://host.docker.internal:11434">
+        <small style="color: #666;">
+            URL actual: {{ current_ollama_url }}
+        </small>
+    </div>
+
     <div style="display: flex; gap: 10px;">
         <button type="submit">💾 Guardar Configuración</button>
         <button type="button" onclick="testApiKey()" style="background: #28a745;">🧪 Probar API Key</button>
@@ -41,8 +56,8 @@
     <ul style="padding-left: 40px;">
         <li><strong>Ollama (Local):</strong> No requiere API key. Funciona localmente.</li>
         <li><strong>Google Gemini:</strong> Requiere API key gratuita. Límites: 15 req/min (gratuito).</li>
-        <li><strong>Almacenamiento:</strong> La API key se guarda en <code>/app/config/settings.json</code>
-            (persistente).</li>
+        <li><strong>Almacenamiento:</strong> La API key se guarda <strong>exclusivamente en tu ordenador local</strong>
+            dentro del contenedor (<code>/app/config/settings.json</code>). No se comparte con nadie más.</li>
     </ul>
 </div>
 

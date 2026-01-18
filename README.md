@@ -1,6 +1,6 @@
 # 🎓 ExamGenerator: Generador Avanzado de Exámenes Aleatorios
 
-[![Version](https://img.shields.io/badge/Version-13.20260114-orange.svg)](https://github.com/TiiZss/ExamGenerator/releases)
+[![Version](https://img.shields.io/badge/Version-13.20260118-orange.svg)](https://github.com/TiiZss/ExamGenerator/releases)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org)
 [![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
@@ -427,7 +427,7 @@ Este proyecto está licenciado bajo la Licencia GPL v3.0 - ver el archivo [LICEN
 
 ## 📈 **Estadísticas del Proyecto**
 
-- 🎯 **Versión Actual**: 13.20260114
+- 🎯 **Versión Actual**: 13.20260118
 - 🐍 **Python**: 3.11+
 - 🐳 **Docker**: Stack completo con 3 contenedores
 - 📦 **Dependencias**: 15+ librerías principales

@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
       target: runtime
-    image: examgenerator:13.20260114
+    image: examgenerator:13.20260118
     environment:
       <<: *common-env
       EXAMGEN_MODE: "cli"
@@ -43,7 +43,7 @@ services:
       - examgen-network
     labels:
       com.examgenerator.service: "cli"
-      com.examgenerator.version: "13.20260114"
+      com.examgenerator.version: "13.20260118"
 
   # ----------------------------------------
   # ExGen-Web: Interfaz web
