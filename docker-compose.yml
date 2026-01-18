@@ -60,8 +60,10 @@ services:
       FLASK_APP: "run_web.py"
       FLASK_ENV: "${FLASK_ENV:-production}"
       GOOGLE_API_KEY: "${GOOGLE_API_KEY:-}"
-      OLLAMA_URL: "${OLLAMA_URL:-http://ollama:11434}"
+      OLLAMA_URL: "${OLLAMA_URL:-http://host.docker.internal:11434}"
       OLLAMA_MODEL: "${OLLAMA_MODEL:-phi3:mini}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       # DEVELOPMENT: Montar código fuente para cambios en caliente
       - ./examgenerator:/app/examgenerator
@@ -93,7 +95,6 @@ services:
       start_period: 10s
     depends_on:
       - app
-      - ollama
     labels:
       com.examgenerator.service: "web"
       com.examgenerator.version: "13.20260114"
@@ -131,38 +132,6 @@ services:
       com.examgenerator.version: "13.20260114"
 
   # ----------------------------------------
-  # ExGen-Ollama: Servidor Ollama (local AI)
-  # ----------------------------------------
-  ollama:
-    container_name: ExGen-Ollama
-    image: ollama/ollama:latest
-    environment:
-      OLLAMA_MODELS: "/root/.ollama/models"
-    volumes:
-      - examgen-ollama-models:/root/.ollama
-    ports:
-      - "${OLLAMA_PORT:-11434}:11434"
-    restart: unless-stopped
-    networks:
-      - examgen-network
-    # GPU support (uncomment if you have NVIDIA GPU)
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
-    healthcheck:
-      test: [ "CMD", "ollama", "list" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    labels:
-      com.examgenerator.service: "ollama-server"
-      com.examgenerator.version: "latest"
-
-  # ----------------------------------------
   # ExGen-AI-Worker: Worker para IA con Ollama
   # ----------------------------------------
   ai-ollama:
@@ -176,7 +145,9 @@ services:
       EXAMGEN_MODE: "ai-worker"
       AI_ENGINE: "ollama"
       AI_MODEL: "${OLLAMA_MODEL:-llama2}"
-      OLLAMA_URL: "http://ollama:11434"
+      OLLAMA_URL: "http://host.docker.internal:11434"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./examples:/data/questions:ro
       - examgen-output:/output/exams
@@ -187,8 +158,6 @@ services:
     restart: unless-stopped
     networks:
       - examgen-network
-    depends_on:
-      - ollama
     profiles:
       - ai
       - ollama
@@ -211,10 +180,6 @@ volumes:
 
   examgen-logs:
     name: ExGen-Logs
-    driver: local
-
-  examgen-ollama-models:
-    name: ExGen-Ollama-Models
     driver: local
 
   examgen-config:
